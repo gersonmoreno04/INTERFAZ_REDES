@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Accesos de Personal</title>
+    <style>
+        /* ESTILOS GENERALES Y NAVEGACIÓN */
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #F4F6F8; color: #333333; font-size: 15px; }
+        nav { background: #002B5C; padding: 12px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #D4AF37; margin-bottom: 30px; }
+        .nav-buttons { display: flex; gap: 10px; align-items: center; }
+        .btn-logout { background: transparent; color: #E74C3C; border: 1px solid #E74C3C; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .btn-logout:hover { background: #E74C3C; color: #FFFFFF; }
+        .btn-admin { background: #D4AF37; color: #002B5C; border: none; padding: 8px 16px; font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 13px; }
+        
+        .contenedor { padding: 0 40px 40px 40px; max-width: 1300px; margin: auto; }
+        .header-seccion { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: #002B5C; margin: 0; font-size: 26px; }
+        
+        .btn-primario { background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-primario:hover { background-color: #001A38; }
+
+        /* TABLA */
+        table { width: 100%; border-collapse: collapse; background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
+        th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 43, 92, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { color: #002B5C; margin: 0; font-size: 20px; }
+        .btn-cerrar { background: none; border: none; font-size: 24px; color: #7F8C8D; cursor: pointer; }
+        
+        /* FORMULARIO GRID */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group.full-width { grid-column: span 2; }
+        .form-group label { display: block; font-weight: bold; color: #002B5C; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; }
+        input[type="text"], input[type="email"], input[type="password"], select { padding: 10px; border: 1px solid #CCC; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        
+        .credenciales-box { background-color: #F8F9FA; padding: 15px; border-radius: 4px; border-left: 4px solid #F39C12; margin-top: 10px; grid-column: span 2;}
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display: flex; align-items: center; gap: 20px; color: #FFFFFF; font-weight: bold; letter-spacing: 1px;">
+            <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 65px; width: auto; filter: brightness(0) invert(1);">
+            <div style="font-size: 20px;">PUMATEL INTRANET | RECURSOS HUMANOS</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-admin" onclick="window.location.href='admin.html'">VOLVER AL PANEL</button>
+            <button class="btn-logout" onclick="window.location.href='login.html'">CERRAR SESIÓN</button>
+        </div>
+    </nav>
+
+    <div class="contenedor">
+        <div class="header-seccion">
+            <h1>Directorio y Accesos de Personal</h1>
+            <button class="btn-primario" onclick="abrirModal()">+ Dar de Alta Empleado</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Completo</th>
+                    <th>Rol en Sistema</th>
+                    <th>Contacto</th>
+                    <th>Usuario de Red</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+                <tr><td colspan="6" style="text-align: center; padding: 20px;">Cargando personal...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modal-personal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Alta de Nuevo Empleado</h2>
+                <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+            </div>
+
+            <form id="form-personal">
+                <div class="form-grid">
+                    
+                    <div class="form-group full-width">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="nombre_completo" required placeholder="Ej. Gerson Moreno" onkeyup="generarCredenciales()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Departamento / Rol</label>
+                        <select id="id_rol" required>
+                            <option value="">Seleccione un rol...</option>
+                            <option value="3">Administración Global</option>
+                            <option value="6">Jefe de NOC</option>
+                            <option value="2">Técnico NOC</option>
+                            <option value="4">Ventas</option>
+                            <option value="5">Almacén y Logística</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="telefono" placeholder="Opcional">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="correo" placeholder="correo@ejemplo.com">
+                    </div>
+
+                    <div class="credenciales-box form-grid">
+                        <div class="form-group full-width" style="margin-bottom: 0;">
+                            <label style="color: #F39C12; font-size: 11px;">Credenciales de Acceso (Autogeneradas)</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="text" id="password" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="text-align: right; margin-top: 25px;">
+                    <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-primario">Guardar Empleado</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        window.onload = cargarPersonal;
+
+        async function cargarPersonal() {
+            try {
+                const res = await fetch('http://localhost:3000/api/usuarios/personal');
+                const datos = await res.json();
+                
+                let html = '';
+                datos.forEach(emp => {
+                    // Mapeo básico de ID de rol a Nombre de rol
+                    let nombreRol = "Desconocido";
+                    if(emp.id_rol === 2) nombreRol = "Técnico NOC";
+                    if(emp.id_rol === 3) nombreRol = "Admin Global";
+                    if(emp.id_rol === 4) nombreRol = "Ventas";
+                    if(emp.id_rol === 5) nombreRol = "Almacén";
+                    if(emp.id_rol === 6) nombreRol = "Jefe NOC";
+
+                    html += `
+                        <tr>
+                            <td><strong>${emp.id_empleado}</strong></td>
+                            <td>${emp.nombre_completo}</td>
+                            <td><span style="background:#E0E6ED; padding:3px 8px; border-radius:3px; font-size:12px; font-weight:bold;">${nombreRol}</span></td>
+                            <td>${emp.correo || emp.telefono || 'Sin datos'}</td>
+                            <td><strong style="color:#002B5C;">${emp.usuario}</strong></td>
+                            <td><span style="color:#27AE60; font-weight:bold;">Activo</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('cuerpo-tabla').innerHTML = html;
+            } catch (error) {
+                document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión.</td></tr>';
+            }
+        }
+
+        /* ==========================================
+           LA MAGIA DEL GENERADOR DE CREDENCIALES
+           ========================================== */
+        function generarCredenciales() {
+            const nombre = document.getElementById('nombre_completo').value.trim();
+            
+            // Si el campo está vacío, limpiamos
+            if (!nombre) {
+                document.getElementById('usuario').value = '';
+                document.getElementById('password').value = '';
+                return;
+            }
+
+            // Dividimos el nombre por espacios (Ej: "Gerson Moreno")
+            const partes = nombre.split(' ');
+            
+            if (partes.length >= 2) {
+                // Toma la primera letra del primer nombre y todo el primer apellido
+                const primeraLetra = partes[0].charAt(0).toLowerCase();
+                const apellido = partes[1].toLowerCase();
+                
+                const usuarioGenerado = primeraLetra + apellido; // "gmoreno"
+                
+                // La contraseña es el usuario pero con la primera letra en mayúscula
+                const passGenerada = usuarioGenerado.charAt(0).toUpperCase() + usuarioGenerado.slice(1); // "Gmoreno"
+
+                document.getElementById('usuario').value = usuarioGenerado;
+                document.getElementById('password').value = passGenerada;
+            }
+        }
+
+        function abrirModal() {
+            document.getElementById('form-personal').reset();
+            document.getElementById('modal-personal').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-personal').style.display = 'none';
+        }
+
+        // GUARDAR EMPLEADO
+        document.getElementById('form-personal').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                nombre_completo: document.getElementById('nombre_completo').value,
+                id_rol: document.getElementById('id_rol').value,
+                telefono: document.getElementById('telefono').value,
+                correo: document.getElementById('correo').value,
+                usuario: document.getElementById('usuario').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const res = await fetch('http://localhost:3000/api/usuarios/personal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(res.ok) {
+                    cerrarModal();
+                    cargarPersonal(); // Recarga la tabla
+                } else {
+                    alert('Error al registrar en la base de datos.');
+                }
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

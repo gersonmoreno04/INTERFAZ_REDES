@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Network Operation Center</title>
+    <style>
+        /* ESTILOS BASE PUMATEL */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #F4F6F8; color: #333; }
+        nav { background: #002B5C; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #D4AF37; }
+        .logo-title { display: flex; align-items: center; gap: 20px; color: white; font-weight: bold; font-size: 20px; }
+        .btn-logout { background: transparent; color: #E74C3C; border: 1px solid #E74C3C; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        .btn-logout:hover { background: #E74C3C; color: white; }
+        
+        .contenedor { padding: 30px 40px; max-width: 1300px; margin: auto; }
+        
+        /* PESTAÑAS (TABS) OPERATIVAS */
+        .tabs { display: flex; border-bottom: 2px solid #002B5C; margin-bottom: 20px; gap: 5px; }
+        .tab-btn { background: #E0E6ED; color: #002B5C; border: none; padding: 12px 25px; font-weight: bold; font-size: 14px; cursor: pointer; border-radius: 6px 6px 0 0; }
+        .tab-btn.active { background: #002B5C; color: white; }
+        .tab-content { display: none; background: white; padding: 25px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+
+        /* TABLAS Y BOTONES */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { padding: 15px; border-bottom: 1px solid #E0E6ED; text-align: left; }
+        th { background: #F8F9FA; color: #002B5C; text-transform: uppercase; font-size: 12px; }
+        .btn-accion { padding: 8px 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .btn-verde { background: #27AE60; }
+        .btn-naranja { background: #F39C12; }
+        .btn-azul { background: #2980B9; }
+        .btn-rojo { background: #E74C3C; }
+
+        /* ETIQUETAS */
+        .sev-s1 { background: #E74C3C; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .sev-s2 { background: #F39C12; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .sev-s3 { background: #3498DB; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .texto-vacio { text-align: center; color: #7F8C8D; font-style: italic; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-title">
+            <img src="logo_pumatel.png" alt="Logo" style="height: 50px; filter: brightness(0) invert(1);">
+            <span>PUMATEL | Network Operation Center (NOC)</span>
+        </div>
+        <button class="btn-logout" onclick="window.location.href='admin.html'">VOLVER AL PANEL</button>
+    </nav>
+
+    <div class="contenedor">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="abrirTab(event, 'tab-fallas'); cargarFallas();">Gestión de Fallas</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-aprovisionamiento'); cargarOA();">Aprovisionamiento (OA)</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-cambios'); cargarCAB();">Gestión de Cambios</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-cancelaciones'); cargarOCS();">Cancelaciones (OCS)</button>
+        </div>
+
+        <!-- MÓDULO 1: GESTIÓN DE FALLAS -->
+        <div id="tab-fallas" class="tab-content active">
+            <h2 style="color: #002B5C; margin-top: 0;">Monitoreo de Incidentes Activos</h2>
+            <p style="color: #7F8C8D; font-size: 13px; margin-bottom: 20px;">Clasificación por severidad S1, S2 y S3. Requiere Análisis de Causa Raíz (RCA) para cierre.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Ticket</th>
+                        <th>Severidad</th>
+                        <th>Cliente Afectado</th>
+                        <th>Descripción de Falla</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-fallas">
+                    <tr><td colspan="6" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MÓDULO 2: APROVISIONAMIENTO -->
+        <div id="tab-aprovisionamiento" class="tab-content">
+            <h2 style="color: #002B5C; margin-top: 0;">Órdenes de Aprovisionamiento (OA)</h2>
+            <p style="color: #7F8C8D; font-size: 13px; margin-bottom: 20px;">Inyección de configuración de red (Provider Edge y Customer Edge) para activación de servicios.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID OA</th>
+                        <th>Cliente</th>
+                        <th>Instalador Asignado</th>
+                        <th>Estado de Implementación</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-oa">
+                    <tr><td colspan="5" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MÓDULO 3: GESTIÓN DE CAMBIOS -->
+        <div id="tab-cambios" class="tab-content">
+            <h2 style="color: #002B5C; margin-top: 0;">Comité de Cambios (CAB)</h2>
+            <p style="color: #7F8C8D; font-size: 13px; margin-bottom: 20px;">Control de ventanas de mantenimiento, impacto en red y planes de Rollback.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Cambio</th>
+                        <th>Descripción Técnica</th>
+                        <th>Nivel de Riesgo</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-cambios">
+                    <tr><td colspan="5" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MÓDULO 4: CANCELACIÓN DE SERVICIOS -->
+        <div id="tab-cancelaciones" class="tab-content">
+            <h2 style="color: #002B5C; margin-top: 0;">Órdenes de Cancelación (OCS)</h2>
+            <p style="color: #7F8C8D; font-size: 13px; margin-bottom: 20px;">Desconfiguración de enlaces lógicos y validación de recuperación de CPE para inventario.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID OCS</th>
+                        <th>Cliente</th>
+                        <th>Motivo de Baja</th>
+                        <th>Estado Operativo</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-ocs">
+                    <tr><td colspan="5" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         VENTANAS EMERGENTES (MODALS) 
+         ========================================== -->
+
+    <!-- MODAL DE RESOLUCIÓN DE FALLAS (RCA) -->
+    <div id="modal-rca" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #27AE60;">
+            <h3 style="color:#002B5C; margin-top:0;">Resolución de Incidente (RCA)</h3>
+            <p style="font-size:13px; color:#7F8C8D;">Documente la causa raíz para cerrar el ticket.</p>
+            <form id="form-rca">
+                <input type="hidden" id="rca-id-ticket">
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Causa Raíz del Problema</label>
+                <textarea id="rca-causa" required style="width:100%; height:60px; margin-bottom:15px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Acciones de Resolución</label>
+                <textarea id="rca-acciones" required style="width:100%; height:60px; margin-bottom:20px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <div style="text-align:right;">
+                    <button type="button" onclick="cerrarModalRCA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="submit" class="btn-verde btn-accion">Cerrar Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE APROVISIONAMIENTO (OA) -->
+    <div id="modal-oa" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 650px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #2980B9;">
+            <h3 style="color:#002B5C; margin-top:0;">Generador de Scripts de Aprovisionamiento</h3>
+            <p style="font-size:13px; color:#7F8C8D;">Copie y ejecute los comandos para establecer la sesión BGP.</p>
+            <input type="hidden" id="oa-id-oculto">
+            <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">1. Configuración Provider Edge (PE)</label>
+            <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:15px; overflow-x:auto;">
+hostname PE-PUMATEL-01
+interface GigabitEthernet0/1
+description Enlace Dedicado - Cliente <span id="script-cliente-nombre" style="color:#569CD6;"></span>
+ip address 172.16.10.1 255.255.255.252
+no shutdown
+router bgp 65001
+neighbor 172.16.10.2 remote-as 65010
+            </div>
+            <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">2. Configuración Customer Edge (CPE)</label>
+            <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:20px; overflow-x:auto;">
+hostname CPE-CLIENTE
+interface GigabitEthernet0/0
+ip address 172.16.10.2 255.255.255.252
+no shutdown
+ip route 0.0.0.0 0.0.0.0 172.16.10.1
+            </div>
+            <div style="text-align:right;">
+                <button type="button" onclick="cerrarModalOA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                <button type="button" onclick="finalizarAprovisionamiento()" class="btn-azul btn-accion">Ejecutar y Finalizar OA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CAMBIOS (CAB) -->
+    <div id="modal-cab" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #F39C12;">
+            <h3 style="color:#002B5C; margin-top:0;">Ejecución de Cambio en la Red</h3>
+            <p style="font-size:13px; color:#7F8C8D;">Confirme el Plan de Rollback (reversión) antes de aplicar.</p>
+            <form id="form-cab">
+                <input type="hidden" id="cab-id-oculto">
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Plan de Rollback Definido</label>
+                <textarea id="cab-rollback" required style="width:100%; height:80px; margin-bottom:20px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <div style="text-align:right;">
+                    <button type="button" onclick="cerrarModalCAB()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="submit" class="btn-naranja btn-accion">Aplicar Cambio y Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE CANCELACIÓN (OCS) -->
+    <div id="modal-ocs" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 600px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #E74C3C;">
+            <h3 style="color:#002B5C; margin-top:0;">Desconfiguración de Servicio (OCS)</h3>
+            <p style="font-size:13px; color:#7F8C8D;">Ejecute los comandos de baja en el Provider Edge y confirme el retiro del equipo físico.</p>
+            
+            <form id="form-ocs">
+                <input type="hidden" id="ocs-id-oculto">
+                
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Comandos de Baja (PE)</label>
+                <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:20px; overflow-x:auto;">
+interface GigabitEthernet0/1
+no description Enlace Dedicado - Cliente <span id="script-ocs-cliente" style="color:#569CD6;"></span>
+no ip address
+shutdown
+exit
+router bgp 65001
+no neighbor 172.16.10.2 remote-as 65010
+                </div>
+
+                <div style="margin-bottom: 25px; background: #F8F9FA; padding: 15px; border-radius: 4px; border: 1px solid #E0E6ED;">
+                    <label style="font-size: 13px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="ocs-equipo-recuperado" style="width: 18px; height: 18px; margin: 0;">
+                        Confirmar que el Ingeniero de Campo recuperó el equipo CPE.
+                    </label>
+                </div>
+                
+                <div style="text-align:right;">
+                    <button type="button" onclick="cerrarModalOCS()" style="background:transparent; border:1px solid #7F8C8D; color:#7F8C8D; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="submit" class="btn-rojo btn-accion">Finalizar Cancelación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SCRIPTS Y LÓGICA DE TIEMPO REAL
+         ========================================== -->
+    <script>
+        // Lógica de TABS
+        function abrirTab(evt, nombreTab) {
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+            let tabbtns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabbtns.length; i++) tabbtns[i].className = tabbtns[i].className.replace(" active", "");
+            document.getElementById(nombreTab).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // CARGAS DE TABLAS
+        // Modifica la parte de cargarFallas() en tu noc.html
+async function cargarFallas() {
+    const userRole = localStorage.getItem('id_rol'); // Asumiendo que guardas el rol al loguear
+    
+    try {
+        const res = await fetch('http://localhost:3000/api/noc/fallas');
+        const datos = await res.json();
+        let html = '';
+
+        datos.forEach(f => {
+            let claseSev = f.severidad === 'S1' ? 'sev-s1' : (f.severidad === 'S2' ? 'sev-s2' : 'sev-s3');
+            
+            // LÓGICA DE JEFE DE OPERACIONES (Rol 6)
+            let celdaAccion = '';
+            if (userRole == '6' && f.estado === 'Nuevo') {
+                celdaAccion = `
+                    <select onchange="asignarATecnico(${f.id_ticket}, this.value)" class="btn-accion btn-azul">
+                        <option value="">Asignar Técnico...</option>
+                        <option value="4">Carlos Técnico</option>
+                        <option value="8">Diego Pineda</option>
+                    </select>`;
+            } else {
+                celdaAccion = f.estado !== 'Resuelto' ? 
+                    `<button class="btn-accion btn-verde" onclick="abrirModalRCA(${f.id_ticket})">Analizar (RCA)</button>` : 
+                    '✔️ Finalizado';
+            }
+
+            html += `<tr>
+                <td><strong>INC-${f.id_ticket}</strong></td>
+                <td><span class="${claseSev}">${f.severidad || 'S3'}</span></td>
+                <td>${f.cliente || 'Desconocido'}</td>
+                <td>${f.descripcion}</td>
+                <td><strong style="color:${f.estado === 'Resuelto' ? '#27AE60' : '#E74C3C'};">${f.estado.toUpperCase()}</strong></td>
+                <td>${celdaAccion}</td>
+            </tr>`;
+        });
+        document.getElementById('cuerpo-fallas').innerHTML = html;
+    } catch (e) { /* ... */ }
+}
+
+        async function cargarOA() {
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/oa');
+                const datos = await res.json();
+                let html = '';
+                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay órdenes de aprovisionamiento pendientes.</td></tr>';
+                else {
+                    datos.forEach(oa => {
+                        html += `<tr>
+                            <td><strong>OA-${oa.id_oa}</strong></td>
+                            <td>${oa.cliente || 'Desconocido'}</td>
+                            <td>${oa.empresa_instaladora || 'Sin asignar'}</td>
+                            <td><strong style="color:${oa.estado === 'Operativo' ? '#27AE60' : '#333'}">${oa.estado}</strong></td>
+                            <td>${oa.estado !== 'Operativo' ? `<button class="btn-accion btn-azul" onclick="abrirModalOA(${oa.id_oa}, '${oa.cliente || 'Desconocido'}')">Generar Configuración</button>` : '✔️ Operativo'}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('cuerpo-oa').innerHTML = html;
+            } catch (e) { document.getElementById('cuerpo-oa').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
+        }
+
+        async function cargarCAB() {
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/cab');
+                const datos = await res.json();
+                let html = '';
+                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay cambios programados en la red.</td></tr>';
+                else {
+                    datos.forEach(cab => {
+                        let claseSev = cab.nivel_riesgo === 'Alto' ? 'sev-s1' : 'sev-s3';
+                        html += `<tr>
+                            <td><strong>CAB-${cab.id_cambio}</strong></td>
+                            <td>${cab.descripcion}</td>
+                            <td><span class="${claseSev}">${cab.nivel_riesgo.toUpperCase()}</span></td>
+                            <td><strong style="color:${cab.estado === 'Completado' ? '#27AE60' : '#333'}">${cab.estado}</strong></td>
+                            <td>${cab.estado !== 'Completado' ? `<button class="btn-accion btn-naranja" onclick="abrirModalCAB(${cab.id_cambio}, '${cab.plan_rollback || ''}')">Ver Rollback y Ejecutar</button>` : '✔️ Completado'}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('cuerpo-cambios').innerHTML = html;
+            } catch (e) { document.getElementById('cuerpo-cambios').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
+        }
+
+        async function cargarOCS() {
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/ocs');
+                const datos = await res.json();
+                let html = '';
+                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay órdenes de cancelación pendientes.</td></tr>';
+                else {
+                    datos.forEach(ocs => {
+                        html += `<tr>
+                            <td><strong>OCS-${ocs.id_ocs}</strong></td>
+                            <td>${ocs.cliente || 'Desconocido'}</td>
+                            <td>${ocs.motivo}</td>
+                            <td><strong style="color:${ocs.estado === 'Finalizado' ? '#27AE60' : '#F39C12'};">${ocs.estado}</strong></td>
+                            <td>${ocs.estado !== 'Finalizado' ? `<button class="btn-accion btn-rojo" onclick="abrirModalOCS(${ocs.id_ocs}, '${ocs.cliente || 'Desconocido'}')">Ejecutar Baja</button>` : '✔️ Finalizado'}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('cuerpo-ocs').innerHTML = html;
+            } catch (e) { document.getElementById('cuerpo-ocs').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
+        }
+
+        // LÓGICA DE MODALS
+        // RCA
+        function abrirModalRCA(id_ticket) { document.getElementById('rca-id-ticket').value = id_ticket; document.getElementById('form-rca').reset(); document.getElementById('modal-rca').style.display = 'flex'; }
+        function cerrarModalRCA() { document.getElementById('modal-rca').style.display = 'none'; }
+        document.getElementById('form-rca').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = { causa_raiz: document.getElementById('rca-causa').value, acciones_resolucion: document.getElementById('rca-acciones').value };
+            try {
+                const res = await fetch(`http://localhost:3000/api/noc/fallas/${document.getElementById('rca-id-ticket').value}/resolver`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if(res.ok) { alert('Ticket cerrado correctamente.'); cerrarModalRCA(); cargarFallas(); }
+            } catch (error) { alert('Error de conexión.'); }
+        });
+
+        // OA
+        function abrirModalOA(id_oa, nombre) { document.getElementById('oa-id-oculto').value = id_oa; document.getElementById('script-cliente-nombre').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); document.getElementById('modal-oa').style.display = 'flex'; }
+        function cerrarModalOA() { document.getElementById('modal-oa').style.display = 'none'; }
+        async function finalizarAprovisionamiento() {
+            try {
+                const res = await fetch(`http://localhost:3000/api/noc/oa/${document.getElementById('oa-id-oculto').value}/configurar`, { method: 'PUT' });
+                if(res.ok) { alert('Servicio provisionado exitosamente.'); cerrarModalOA(); cargarOA(); }
+            } catch (error) { alert('Error de conexión.'); }
+        }
+
+        // CAB
+        function abrirModalCAB(id_cambio, rollback) { document.getElementById('cab-id-oculto').value = id_cambio; document.getElementById('cab-rollback').value = rollback !== 'null' ? rollback : ''; document.getElementById('modal-cab').style.display = 'flex'; }
+        function cerrarModalCAB() { document.getElementById('modal-cab').style.display = 'none'; }
+        document.getElementById('form-cab').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch(`http://localhost:3000/api/noc/cab/${document.getElementById('cab-id-oculto').value}/ejecutar`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_rollback: document.getElementById('cab-rollback').value }) });
+                if(res.ok) { alert('Cambio en red ejecutado.'); cerrarModalCAB(); cargarCAB(); }
+            } catch (error) { alert('Error de conexión.'); }
+        });
+
+        // OCS (CANCELACIONES)
+        function abrirModalOCS(id_ocs, nombre) { 
+            document.getElementById('ocs-id-oculto').value = id_ocs; 
+            document.getElementById('script-ocs-cliente').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); 
+            document.getElementById('ocs-equipo-recuperado').checked = false;
+            document.getElementById('modal-ocs').style.display = 'flex'; 
+        }
+        function cerrarModalOCS() { document.getElementById('modal-ocs').style.display = 'none'; }
+        document.getElementById('form-ocs').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = { equipo_recuperado: document.getElementById('ocs-equipo-recuperado').checked };
+            try {
+                const res = await fetch(`http://localhost:3000/api/noc/ocs/${document.getElementById('ocs-id-oculto').value}/desconfigurar`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if(res.ok) { alert('Cancelación ejecutada.'); cerrarModalOCS(); cargarOCS(); }
+            } catch (error) { alert('Error de conexión.'); }
+        });
+
+        async function asignarATecnico(idTicket, idTecnico) {
+    if(!idTecnico) return;
+    
+    try {
+        const res = await fetch(`http://localhost:3000/api/noc/fallas/asignar`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_ticket: idTicket, id_tecnico: idTecnico })
+        });
+        if(res.ok) {
+            alert('Ticket asignado al técnico exitosamente.');
+            cargarFallas();
+        }
+    } catch (error) {
+        alert('Error al conectar con el servidor.');
+    }
+}
+
+        // INIT
+        window.onload = cargarFallas;
+    </script>
+</body>
+</html>

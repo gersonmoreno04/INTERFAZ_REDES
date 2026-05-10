@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Portal de Clientes</title>
+    <style>
+        /* Estilos oficiales Pumatel */
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #F4F6F8; margin: 0; color: #333; }
+        
+        /* BARRA DE NAVEGACIÓN CON LOGO */
+        nav { background: #002B5C; padding: 12px 30px; color: white; font-weight: bold; font-size: 20px; border-bottom: 3px solid #D4AF37; display: flex; align-items: center; gap: 20px; }
+        
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-top: 5px solid #D4AF37; }
+        h2 { color: #002B5C; border-bottom: 2px solid #E0E6ED; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        label { font-weight: bold; font-size: 13px; color: #7F8C8D; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        textarea { height: 100px; resize: vertical; }
+        
+        button { background: #002B5C; color: white; padding: 12px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; }
+        button:hover { background: #001A38; }
+    </style>
+</head>
+<body>
+
+<!-- NAV CON LOGO INCORPORADO -->
+<nav>
+    <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 55px; width: auto; filter: brightness(0) invert(1);">
+    <span>PUMATEL | Portal de Soporte Técnico</span>
+</nav>
+
+<div class="container">
+    <h2>Levantar Reporte de Falla</h2>
+
+    <form id="formReporte">
+        <label>Identificador de Cliente</label>
+        <input type="text" id="identificador" placeholder="Ingrese su ID de cliente o su número telefónico" required>
+        
+        <label>¿Qué problema presenta su servicio?</label>
+        <select id="tipo_falla" required>
+            <option value="">Seleccione una opción...</option>
+            <option value="Sin internet">No tengo conexión a internet</option>
+            <option value="Lento">El internet está muy lento o intermitente</option>
+            <option value="Sin señal">El módem tiene focos rojos encendidos</option>
+            <option value="Otro">Otro problema técnico</option>
+        </select>
+
+        <label>Describa el problema detalladamente</label>
+        <textarea id="descripcion" placeholder="Ej. Llevo 2 horas sin servicio y reinicié el módem pero no funciona..." required></textarea>
+
+        <button type="submit">Enviar Reporte a Central</button>
+    </form>
+</div>
+
+<script>
+// ENVIAR REPORTE A LA BASE DE DATOS
+document.getElementById("formReporte").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const payload = {
+        identificador: document.getElementById("identificador").value,
+        tipo_falla: document.getElementById("tipo_falla").value,
+        descripcion: document.getElementById("descripcion").value
+    };
+
+    try {
+        const res = await fetch("http://localhost:3000/api/reportes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await res.json();
+        
+        if(res.ok) {
+            alert(data.mensaje);
+            // Solo limpiamos el formulario para que quede listo por si acaso
+            document.getElementById("formReporte").reset();
+        } else {
+            alert("Error: " + data.mensaje);
+        }
+    } catch (error) {
+        alert("Fallo de conexión con el servidor.");
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Almacén y Logística</title>
+    <style>
+        /* ESTILOS GENERALES Y NAVEGACIÓN (Iguales a NOC/Admin para consistencia) */
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #F4F6F8; color: #333333; font-size: 15px; }
+        nav { background: #002B5C; padding: 12px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #D4AF37; margin-bottom: 30px; }
+        .nav-buttons { display: flex; gap: 10px; align-items: center; }
+        .btn-logout { background: transparent; color: #E74C3C; border: 1px solid #E74C3C; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .btn-logout:hover { background: #E74C3C; color: #FFFFFF; }
+        .contenedor { padding: 0 40px 40px 40px; max-width: 1300px; margin: auto; }
+        
+        /* HEADER DE SECCIÓN */
+        .header-almacen { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; margin-bottom: 20px; }
+        h1 { color: #002B5C; margin: 0; font-size: 26px; }
+        
+        /* BOTONES Y BUSCADOR */
+        .btn-primario { background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-primario:hover { background-color: #001A38; }
+        .btn-editar { background-color: #F39C12; color: #FFF; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-editar:hover { background-color: #D68910; }
+        
+        input[type="text"], input[type="number"], select { padding: 10px; border: 1px solid #CCC; border-radius: 4px; width: 100%; box-sizing: border-box; }
+
+        /* TABLA */
+        table { width: 100%; border-collapse: collapse; background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
+        th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
+        .texto-gris { color: #7F8C8D; font-style: italic; }
+
+        /* ========================================================
+           LA MAGIA DE LA VENTANA EMERGENTE (MODAL)
+           ======================================================== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 43, 92, 0.6); /* Fondo azul marino transparente */
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-box {
+            background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { color: #002B5C; margin: 0; font-size: 20px; }
+        .btn-cerrar { background: none; border: none; font-size: 24px; color: #7F8C8D; cursor: pointer; }
+        .btn-cerrar:hover { color: #E74C3C; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; color: #002B5C; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="display: flex; align-items: center; gap: 20px; color: #FFFFFF; font-weight: bold; letter-spacing: 1px;">
+            <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 65px; width: auto; filter: brightness(0) invert(1);">
+            <div style="font-size: 20px;">PUMATEL INTRANET | LOGÍSTICA</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-logout" onclick="window.location.href='login.html'">CERRAR SESIÓN</button>
+        </div>
+    </nav>
+
+    <div class="contenedor">
+        <div class="header-almacen">
+            <h1>Control General de Activos</h1>
+            <div style="display: flex; gap: 15px;">
+                <input type="text" placeholder="Buscar por serie, equipo..." style="width: 300px;">
+                <button class="btn-primario" onclick="abrirModalNuevo()">+ Registrar Equipo</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Inv</th>
+                    <th>Hardware</th>
+                    <th>Número de Serie</th>
+                    <th>Asignado A</th>
+                    <th>Dirección</th>
+                    <th>ID Cliente</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+                <tr><td colspan="8" style="text-align: center; padding: 20px;">Cargando inventario...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modal-inventario">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Registrar Nuevo Equipo</h2>
+                <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+            </div>
+
+            <form id="form-equipo">
+                <input type="hidden" id="id_inventario">
+
+                <div class="form-group">
+                    <label>Modelo / Hardware</label>
+                    <input type="text" id="equipo" required placeholder="Ej. ONT Huawei HG8245H">
+                </div>
+
+                <div class="form-group">
+                    <label>Número de Serie</label>
+                    <input type="text" id="serie" required placeholder="Ej. SN-PUMA-005">
+                </div>
+
+                <div class="form-group">
+                    <label>ID Cliente Asignado (Dejar en blanco si está en bodega)</label>
+                    <input type="number" id="id_cliente" placeholder="ID del Cliente">
+                </div>
+
+                <div class="form-group">
+                    <label>Estado del Equipo</label>
+                    <select id="estado" required>
+                        <option value="Optimo">Óptimo (Listo para usar)</option>
+                        <option value="En reparacion">En Reparación</option>
+                        <option value="Baja">Baja / Desechado</option>
+                    </select>
+                </div>
+
+                <div style="text-align: right; margin-top: 25px;">
+                    <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
+                    <button type="submit" class="btn-primario">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Aquí guardaremos los datos temporalmente para poder editarlos sin recargar
+        let datosInventario = []; 
+
+        window.onload = function() {
+            cargarInventario();
+        };
+
+        // 1. CARGAR DATOS EN LA TABLA
+        async function cargarInventario() {
+            try {
+                const res = await fetch('http://localhost:3000/api/inventario');
+                datosInventario = await res.json();
+                
+                let html = '';
+                datosInventario.forEach(item => {
+                    // Si no tiene cliente, mostramos el texto gris de "EN BODEGA"
+                    let asignado = item.cliente ? item.cliente : '<span class="texto-gris">EN BODEGA</span>';
+                    let direccion = item.direccion ? item.direccion : '---';
+                    let idCliente = item.id_cliente ? `CL-${item.id_cliente}` : '---';
+                    
+                    // Colores para el estado
+                    let colorEstado = '#333';
+                    if(item.estado === 'Optimo') colorEstado = '#27AE60';
+                    if(item.estado === 'En reparacion') colorEstado = '#D35400';
+                    if(item.estado === 'Baja') colorEstado = '#C0392B';
+
+                    html += `
+                        <tr>
+                            <td>${item.id_inventario}</td>
+                            <td>${item.equipo}</td>
+                            <td><strong>${item.serie}</strong></td>
+                            <td>${asignado}</td>
+                            <td>${direccion}</td>
+                            <td>${idCliente}</td>
+                            <td><strong style="color: ${colorEstado};">${item.estado.toUpperCase()}</strong></td>
+                            <td>
+                                <button class="btn-editar" onclick="abrirModalEditar(${item.id_inventario})">✎ Editar</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('cuerpo-tabla').innerHTML = html;
+            } catch (error) {
+                document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">Error al conectar con la base de datos.</td></tr>';
+            }
+        }
+
+        // 2. LÓGICA DE LA VENTANA EMERGENTE (MODAL)
+        function abrirModalNuevo() {
+            document.getElementById('form-equipo').reset(); // Limpia el formulario
+            document.getElementById('id_inventario').value = ''; // Se asegura de que no haya ID
+            document.getElementById('modal-titulo').innerText = 'Registrar Nuevo Equipo';
+            document.getElementById('modal-inventario').style.display = 'flex'; // Muestra el Modal
+        }
+
+        function abrirModalEditar(id) {
+            // Buscamos el equipo exacto en los datos que ya descargamos
+            const equipo = datosInventario.find(e => e.id_inventario === id);
+            
+            // Rellenamos el formulario con sus datos
+            document.getElementById('id_inventario').value = equipo.id_inventario;
+            document.getElementById('equipo').value = equipo.equipo;
+            document.getElementById('serie').value = equipo.serie;
+            document.getElementById('id_cliente').value = equipo.id_cliente || '';
+            document.getElementById('estado').value = equipo.estado;
+
+            document.getElementById('modal-titulo').innerText = 'Modificar Equipo #' + id;
+            document.getElementById('modal-inventario').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-inventario').style.display = 'none';
+        }
+
+        // 3. ENVIAR DATOS A NODE.JS (Crear o Editar)
+        document.getElementById('form-equipo').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evita que la página se recargue
+
+            const id = document.getElementById('id_inventario').value;
+            const payload = {
+                equipo: document.getElementById('equipo').value,
+                serie: document.getElementById('serie').value,
+                id_cliente: document.getElementById('id_cliente').value,
+                estado: document.getElementById('estado').value
+            };
+
+            // Si hay un ID escondido, significa que es edición (PUT), si no, es nuevo (POST)
+            const url = id ? `http://localhost:3000/api/inventario/${id}` : 'http://localhost:3000/api/inventario';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(res.ok) {
+                    cerrarModal(); // Cerramos la ventana emergente
+                    cargarInventario(); // Recargamos la tabla en tiempo real
+                } else {
+                    alert('Error al guardar los datos en el servidor.');
+                }
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

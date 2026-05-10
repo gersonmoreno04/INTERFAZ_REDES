@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Centro de Operaciones</title>
+    <style>
+        /* ESTILOS GENERALES: Tamaño base devuelto a la normalidad (15px) */
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            background-color: #F4F6F8; 
+            color: #333333;
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            font-size: 15px; 
+        }
+        
+        /* EL MENÚ LATERAL: Ancho original (260px) */
+        .sidebar { 
+            background-color: #002B5C; 
+            color: #FFFFFF; 
+            width: 260px; 
+            transition: transform 0.3s ease; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar.oculto { 
+            transform: translateX(-260px); 
+            position: absolute; 
+            height: 100%; 
+            z-index: 1000; 
+        }
+        /* Actualiza esto en tus estilos CSS */
+        .sidebar-header { 
+            padding: 15px 20px; /* Reduje el padding para acomodar el logo grande */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+            text-align: center; 
+            color: #D4AF37;
+            text-transform: uppercase;
+            
+            /* NUEVO: Flexbox para alinear logo y texto */
+            display: flex; 
+            flex-direction: column; /* Logo arriba, texto abajo */
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .menu-btn { 
+            background: none; 
+            border: none; 
+            color: #E0E6ED; 
+            padding: 18px 25px; 
+            text-align: left; 
+            font-size: 15px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-left: 4px solid transparent;
+        }
+        .menu-btn:hover { 
+            background-color: #001A38; 
+            color: #FFFFFF; 
+        }
+        .menu-btn.activo { 
+            background-color: #001A38; 
+            color: #FFFFFF; 
+            border-left: 4px solid #D4AF37; 
+            font-weight: bold;
+        }
+        .menu-bottom { 
+            margin-top: auto; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+        .btn-logout { color: #E74C3C; }
+        .btn-logout:hover { background-color: #4A1A1A; }
+
+        /* EL CONTENIDO PRINCIPAL */
+        .main-content { 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+            transition: margin-left 0.3s; 
+        }
+        
+        /* LA BARRA SUPERIOR */
+        .header { 
+            background: #FFFFFF; 
+            padding: 15px 25px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 2px solid #D4AF37;
+        }
+        .hamburguesa { 
+            font-size: 22px; 
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            color: #002B5C; 
+            padding: 0;
+        }
+        .user-info { 
+            font-size: 14px;
+            font-weight: 600; 
+            color: #002B5C; 
+        }
+
+        /* LAS VENTANAS */
+        .contenido-ventana { 
+            padding: 40px; 
+            overflow-y: auto; 
+            display: none; 
+            height: 100%; 
+            box-sizing: border-box;
+        }
+        .contenido-ventana.activa { display: block; }
+        h2 {
+            color: #002B5C;
+            margin-top: 0;
+            border-bottom: 1px solid #E0E6ED;
+            padding-bottom: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        /* TARJETAS DE MÉTRICAS */
+        .kpi-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 40px; 
+        }
+        .kpi-card { 
+            background: #FFFFFF; 
+            padding: 25px; 
+            border-radius: 4px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            border-left: 5px solid #002B5C; 
+        }
+        .kpi-card h3 { 
+            margin: 0; 
+            font-size: 13px; 
+            color: #7F8C8D; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .kpi-card p { 
+            margin: 10px 0 0 0; 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #002B5C; 
+        }
+
+        /* TABLAS Y BOTONES */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: #FFFFFF; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            font-size: 14px;
+        }
+        th, td { border-bottom: 1px solid #E0E6ED; padding: 15px; text-align: left; }
+        th { background-color: #F8F9FA; color: #002B5C; font-weight: bold; }
+        tr:hover { background-color: #F4F6F8; }
+        
+        .btn-primario {
+            background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px;
+            font-size: 14px; cursor: pointer; border-radius: 3px; transition: background 0.2s;
+        }
+        .btn-primario:hover { background-color: #001A38; }
+        
+        .btn-link { 
+            background: #FFFFFF; color: #002B5C; padding: 20px; text-decoration: none; 
+            border: 1px solid #E0E6ED; border-left: 4px solid #002B5C; border-radius: 4px; 
+            text-align: left; display: block; font-weight: bold; font-size: 16px; 
+            transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .btn-link:hover { background: #F8F9FA; border-left-color: #D4AF37; }
+        
+        .estado-critico { background-color: #FDFEFE; color: #C0392B; border: 1px solid #E6B0AA; padding: 4px 10px; border-radius: 2px; font-size: 12px; font-weight: bold; }
+        .estado-normal { background-color: #FDFEFE; color: #27AE60; border: 1px solid #A9DFBF; padding: 4px 10px; border-radius: 2px; font-size: 12px; font-weight: bold; }
+        
+        .actividad-lista { list-style: none; padding: 0; margin: 0; }
+        .actividad-lista li { padding: 12px 0; border-bottom: 1px solid #E0E6ED; font-size: 14px; color: #555; }
+        .actividad-lista li:last-child { border-bottom: none; }
+        .badge { font-weight: bold; color: #002B5C; display: inline-block; width: 80px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 70px; width: auto; filter: brightness(0) invert(1);">
+            <div style="font-size: 16px; font-weight: bold; letter-spacing: 1px;">PUMATEL INTRANET</div>
+        </div>
+        
+        <button class="menu-btn activo" onclick="abrirVentana('ventana-resumen', this)">Resumen Operativo</button>
+        <button class="menu-btn" onclick="abrirVentana('ventana-clientes', this)">Directorio de Clientes</button>
+        <button class="menu-btn" onclick="abrirVentana('ventana-trafico', this)">Gestión de Tickets NOC</button>
+        <button class="menu-btn" onclick="abrirVentana('ventana-portales', this)">Accesos de Personal</button>
+
+        <div class="menu-bottom">
+            <button class="menu-btn btn-logout" onclick="window.location.href='/'">Finalizar Sesión</button>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        
+        <header class="header">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button class="hamburguesa" onclick="toggleSidebar()">☰</button>
+                <div style="font-size: 18px; font-weight: bold; color: #002B5C;" id="mensaje-bienvenida">
+                    Cargando usuario...
+                </div>
+            </div>
+            <div class="user-info">Panel de Dirección</div>
+        </header>
+
+        <div id="ventana-resumen" class="contenido-ventana activa">
+            <h2>Métricas Operativas</h2>
+            
+            <div class="kpi-container">
+                <div class="kpi-card">
+                    <h3>Total de Clientes Activos</h3>
+                    <p id="kpi-clientes">--</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Tickets en NOC (Pendientes)</h3>
+                    <p id="kpi-tickets">--</p>
+                </div>
+                <div class="kpi-card">
+                    <h3>Inventario total (Hardware)</h3>
+                    <p id="kpi-inventario">--</p>
+                </div>
+            </div>
+
+            <div style="background: #FFFFFF; padding: 25px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="margin-top: 0; color: #002B5C; font-size: 16px;">Registro de Actividad Reciente</h3>
+                <ul class="actividad-lista" id="lista-bitacora">
+                    <li style="text-align: center; color: #7F8C8D;">Cargando actividad...</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="ventana-clientes" class="contenido-ventana">
+            <h2>Base de Datos de Clientes</h2>
+            <button class="btn-primario" onclick="cargarClientes()" style="margin-bottom: 20px;">Actualizar Registros</button>
+            <div id="tabla-clientes">
+                <p style="color: #7F8C8D; font-size: 14px;">Presione "Actualizar Registros" para sincronizar con la base de datos.</p>
+            </div>
+        </div>
+
+        <div id="ventana-trafico" class="contenido-ventana">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h2>Supervisión de Soporte Técnico</h2>
+                    <p style="color: #7F8C8D; font-size: 14px; margin: 0;">Listado de incidentes y requerimientos técnicos en proceso.</p>
+                </div>
+                <button class="btn-primario" onclick="cargarTicketsNOC()">🔄 Refrescar Tickets</button>
+            </div>
+            
+            <table id="tabla-tickets-admin">
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Prioridad</th>
+                    <th>Descripción</th>
+                    <th>Cliente</th>
+                    <th>Estado Actual</th>
+                    <th>Técnico Asignado</th>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 20px; color: #7F8C8D;">Cargando tickets desde el NOC...</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="ventana-portales" class="contenido-ventana">
+            <h2>Módulos del Sistema Operativo</h2>
+            <p style="color: #7F8C8D; font-size: 14px; margin-bottom: 20px;">Acceso directo a las interfaces de las áreas operativas de Pumatel.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <a href="ventas.html" class="btn-link">
+                    <span style="display:block; font-size: 12px; color: #7F8C8D; font-weight: normal; margin-bottom: 5px;">Módulo Comercial</span>
+                    Portal de Ventas
+                </a>
+                <a href="almacen.html" class="btn-link">
+                    <span style="display:block; font-size: 12px; color: #7F8C8D; font-weight: normal; margin-bottom: 5px;">Módulo Logístico</span>
+                    Control de Almacén
+                </a>
+                <a href="noc.html" class="btn-link">
+                    <span style="display:block; font-size: 12px; color: #7F8C8D; font-weight: normal; margin-bottom: 5px;">Módulo Técnico</span>
+                    Centro de Operaciones (NOC)
+                </a>
+                
+                <a href="personal.html" class="btn-link" style="border-left-color: #F39C12;">
+                    <span style="display:block; font-size: 12px; color: #7F8C8D; font-weight: normal; margin-bottom: 5px;">Módulo Administrativo</span>
+                    Recursos Humanos (Personal)
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.onload = function() {
+            const nombre = localStorage.getItem('nombreEmpleado') || 'Administrador';
+            document.getElementById('mensaje-bienvenida').innerText = 'Bienvenido, ' + nombre;
+            
+            cargarBitacora(); 
+            cargarMetricas(); 
+            cargarTicketsNOC();
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("miSidebar");
+            sidebar.classList.toggle("oculto");
+        }
+
+        function abrirVentana(idVentana, botonPresionado) {
+            const ventanas = document.querySelectorAll('.contenido-ventana');
+            ventanas.forEach(ventana => ventana.classList.remove('activa'));
+
+            document.getElementById(idVentana).classList.add('activa');
+
+            const botones = document.querySelectorAll('.menu-btn');
+            botones.forEach(btn => btn.classList.remove('activo'));
+
+            botonPresionado.classList.add('activo');
+        }
+
+        async function cargarClientes() {
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/usuarios/clientes'); 
+                const datos = await respuesta.json();
+
+                let html = '<table><tr><th>ID Cliente</th><th>Nombre Completo</th><th>Correo Electrónico</th><th>Teléfono</th><th>Dirección de Servicio</th></tr>';
+                datos.forEach(c => {
+                    html += `<tr>
+                                <td>${c.id_cliente}</td>
+                                <td>${c.nombre_completo}</td>
+                                <td>${c.email || 'N/D'}</td>
+                                <td>${c.telefono}</td>
+                                <td>${c.direccion || 'N/D'}</td>
+                             </tr>`;
+                });
+                html += '</table>';
+                document.getElementById('tabla-clientes').innerHTML = html;
+            } catch (error) {
+                document.getElementById('tabla-clientes').innerHTML = '<p style="color:#C0392B;">Error de conexión: No se pudo enlazar con la base de datos.</p>';
+            }
+        }
+
+        async function cargarBitacora() {
+            try {
+                const respuesta = await fetch('http://localhost:3000/api/bitacora');
+                const datos = await respuesta.json();
+                
+                let html = '';
+                datos.forEach(log => {
+                    // Convertir la fecha de MySQL a hora local legible (Ej: 10:45 AM)
+                    const fecha = new Date(log.fecha);
+                    const horaFormateada = fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+
+                    html += `
+                        <li>
+                            <span class="badge">${log.modulo}</span> 
+                            ${log.accion} 
+                            <span style="color:#999; float:right;">${horaFormateada}</span>
+                        </li>`;
+                });
+                document.getElementById('lista-bitacora').innerHTML = html;
+            } catch (error) {
+                document.getElementById('lista-bitacora').innerHTML = '<li style="color:red;">Error al cargar bitácora.</li>';
+            }
+        }
+
+        async function cargarMetricas() {
+            try {
+                const res = await fetch('http://localhost:3000/api/dashboard/metricas');
+                const datos = await res.json();
+                
+                // Si Node.js nos manda un mensaje de error en vez de los números:
+                if (!res.ok || datos.mensaje) {
+                    console.error('El servidor dice:', datos.mensaje);
+                    document.getElementById('kpi-clientes').innerText = "Error";
+                    document.getElementById('kpi-tickets').innerText = "Error";
+                    document.getElementById('kpi-inventario').innerText = "Error";
+                    return; // Detenemos la función aquí
+                }
+                
+                // Si todo está bien, ponemos los números
+                document.getElementById('kpi-clientes').innerText = datos.clientes;
+                document.getElementById('kpi-tickets').innerText = datos.tickets;
+                document.getElementById('kpi-inventario').innerText = datos.inventario;
+            } catch (error) {
+                console.error('Error de red:', error);
+                document.getElementById('kpi-clientes').innerText = "X";
+                document.getElementById('kpi-tickets').innerText = "X";
+                document.getElementById('kpi-inventario').innerText = "X";
+            }
+        }
+
+        async function cargarTicketsNOC() {
+            try {
+                // Usamos la misma ruta que ya creamos para el Jefe del NOC
+                const respuesta = await fetch('http://localhost:3000/api/tickets?idRol=6');
+                const tickets = await respuesta.json();
+
+                let html = `
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Prioridad</th>
+                        <th>Descripción</th>
+                        <th>Cliente</th>
+                        <th>Estado Actual</th>
+                        <th>Técnico Asignado</th>
+                    </tr>
+                `;
+
+                tickets.forEach(t => {
+                    // Ponemos color rojo si es crítica o alta, verde si es normal o baja
+                    let clasePrioridad = (t.prioridad === 'Critica' || t.prioridad === 'Alta') ? 'estado-critico' : 'estado-normal';
+
+                    html += `
+                        <tr>
+                            <td><strong>#TK-${t.id_ticket}</strong></td>
+                            <td><span class="${clasePrioridad}">${t.prioridad.toUpperCase()}</span></td>
+                            <td>${t.descripcion}</td>
+                            <td>${t.cliente || 'Sin asignar'}</td>
+                            <td><strong>${t.estado}</strong></td>
+                            <td>${t.tecnico || '<span style="color:#E74C3C; font-weight:bold;">Sin asignar</span>'}</td>
+                        </tr>
+                    `;
+                });
+
+                if (tickets.length === 0) {
+                    html += '<tr><td colspan="6" style="text-align:center;">No hay tickets registrados en el sistema.</td></tr>';
+                }
+
+                document.getElementById('tabla-tickets-admin').innerHTML = html;
+
+            } catch (error) {
+                console.error("Error al cargar tickets:", error);
+                document.getElementById('tabla-tickets-admin').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error al conectar con la base de datos de tickets.</td></tr>';
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+// Archivo: routes/authRoutes.js
+const express = require('express');
+const router = express.Router();
+const { iniciarSesion } = require('../controllers/authController');
+
+router.post('/login', iniciarSesion);
+
+module.exports = router;
