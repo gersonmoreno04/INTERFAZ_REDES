@@ -25,6 +25,12 @@
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
         th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
  
+        /* BOTONES DE ACCIÓN EN TABLA */
+        .btn-accion { border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; transition: opacity 0.2s; }
+        .btn-accion:hover { opacity: 0.8; }
+        .btn-editar { background-color: #F39C12; color: #FFFFFF; margin-right: 6px; }
+        .btn-eliminar { background-color: #E74C3C; color: #FFFFFF; }
+ 
         /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 43, 92, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; }
@@ -40,6 +46,14 @@
         input[type="text"], input[type="email"], input[type="password"], select { padding: 10px; border: 1px solid #CCC; border-radius: 4px; width: 100%; box-sizing: border-box; }
         
         .credenciales-box { background-color: #F8F9FA; padding: 15px; border-radius: 4px; border-left: 4px solid #F39C12; margin-top: 10px; grid-column: span 2;}
+ 
+        /* MODAL CONFIRMACIÓN ELIMINAR */
+        .modal-confirm-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 400px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #E74C3C; text-align: center; }
+        .modal-confirm-box h2 { color: #002B5C; margin-bottom: 10px; }
+        .modal-confirm-box p { color: #555; margin-bottom: 25px; }
+        .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+        .btn-confirmar-eliminar { background-color: #E74C3C; color: #FFFFFF; border: none; padding: 10px 24px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-confirmar-eliminar:hover { background-color: #C0392B; }
     </style>
 </head>
 <body>
@@ -70,20 +84,25 @@
                     <th>Contacto</th>
                     <th>Usuario de Red</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="cuerpo-tabla">
-                <tr><td colspan="6" style="text-align: center; padding: 20px;">Cargando personal...</td></tr>
+                <tr><td colspan="7" style="text-align: center; padding: 20px;">Cargando personal...</td></tr>
             </tbody>
         </table>
     </div>
  
+    <!-- ===== MODAL: ALTA / EDICIÓN DE EMPLEADO ===== -->
     <div class="modal-overlay" id="modal-personal">
         <div class="modal-box">
             <div class="modal-header">
-                <h2>Alta de Nuevo Empleado</h2>
+                <h2 id="modal-titulo">Alta de Nuevo Empleado</h2>
                 <button class="btn-cerrar" onclick="cerrarModal()">×</button>
             </div>
+ 
+            <!-- Campo oculto para guardar el ID al editar -->
+            <input type="hidden" id="id_empleado_editar">
  
             <form id="form-personal">
                 <div class="form-grid">
@@ -125,7 +144,7 @@
                         </div>
                         <div class="form-group">
                             <label>Contraseña</label>
-                            <input type="text" id="password" required>
+                            <input type="text" id="password">
                         </div>
                     </div>
  
@@ -133,13 +152,30 @@
  
                 <div style="text-align: right; margin-top: 25px;">
                     <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
-                    <button type="submit" class="btn-primario">Guardar Empleado</button>
+                    <button type="submit" class="btn-primario" id="btn-submit-form">Guardar Empleado</button>
                 </div>
             </form>
         </div>
     </div>
  
+    <!-- ===== MODAL: CONFIRMACIÓN DE ELIMINACIÓN ===== -->
+    <div class="modal-overlay" id="modal-confirmar-eliminar">
+        <div class="modal-confirm-box">
+            <h2>⚠️ Eliminar Empleado</h2>
+            <p id="texto-confirmar-eliminar">¿Estás seguro de que deseas eliminar a este empleado? Esta acción no se puede deshacer.</p>
+            <div class="confirm-actions">
+                <button class="btn-logout" onclick="cerrarModalEliminar()">Cancelar</button>
+                <button class="btn-confirmar-eliminar" onclick="confirmarEliminar()">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
+ 
     <script>
+        // Variable para saber si el modal está en modo "editar" o "crear"
+        let modoEdicion = false;
+        // Guarda el ID del empleado que se va a eliminar
+        let idEmpleadoAEliminar = null;
+ 
         window.onload = function() {
             cargarPersonal();
             if (parseInt(localStorage.getItem('idRol') || '0') === 3) {
@@ -154,6 +190,11 @@
             window.location.href = 'login.html';
         }
  
+        function nombreRolPorId(id_rol) {
+            const roles = { 2: "Técnico NOC", 3: "Admin Global", 4: "Ventas", 5: "Almacén", 6: "Jefe NOC" };
+            return roles[id_rol] || "Desconocido";
+        }
+ 
         async function cargarPersonal() {
             try {
                 const res = await fetch('http://localhost:3000/api/usuarios/personal');
@@ -161,13 +202,9 @@
                 
                 let html = '';
                 datos.forEach(emp => {
-                    // Mapeo básico de ID de rol a Nombre de rol
-                    let nombreRol = "Desconocido";
-                    if(emp.id_rol === 2) nombreRol = "Técnico NOC";
-                    if(emp.id_rol === 3) nombreRol = "Admin Global";
-                    if(emp.id_rol === 4) nombreRol = "Ventas";
-                    if(emp.id_rol === 5) nombreRol = "Almacén";
-                    if(emp.id_rol === 6) nombreRol = "Jefe NOC";
+                    const nombreRol = nombreRolPorId(emp.id_rol);
+                    // Escapamos los datos para usarlos como atributos data-*
+                    const dataEmp = encodeURIComponent(JSON.stringify(emp));
  
                     html += `
                         <tr>
@@ -177,48 +214,56 @@
                             <td>${emp.correo || emp.telefono || 'Sin datos'}</td>
                             <td><strong style="color:#002B5C;">${emp.usuario}</strong></td>
                             <td><span style="color:#27AE60; font-weight:bold;">Activo</span></td>
+                            <td>
+                                <button class="btn-accion btn-editar" onclick="abrirModalEditar('${dataEmp}')">✏️ Editar</button>
+                                <button class="btn-accion btn-eliminar" onclick="abrirModalEliminar(${emp.id_empleado}, '${emp.nombre_completo}')">🗑️ Eliminar</button>
+                            </td>
                         </tr>
                     `;
                 });
                 document.getElementById('cuerpo-tabla').innerHTML = html;
             } catch (error) {
-                document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión.</td></tr>';
+                document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">Error de conexión.</td></tr>';
             }
         }
  
         /* ==========================================
-           LA MAGIA DEL GENERADOR DE CREDENCIALES
+           GENERADOR DE CREDENCIALES (SIN CAMBIOS)
            ========================================== */
         function generarCredenciales() {
+            // Solo auto-genera si estamos en modo ALTA (no edición)
+            if (modoEdicion) return;
+ 
             const nombre = document.getElementById('nombre_completo').value.trim();
             
-            // Si el campo está vacío, limpiamos
             if (!nombre) {
                 document.getElementById('usuario').value = '';
                 document.getElementById('password').value = '';
                 return;
             }
  
-            // Dividimos el nombre por espacios (Ej: "Gerson Moreno")
             const partes = nombre.split(' ');
             
             if (partes.length >= 2) {
-                // Toma la primera letra del primer nombre y todo el primer apellido
                 const primeraLetra = partes[0].charAt(0).toLowerCase();
                 const apellido = partes[1].toLowerCase();
-                
-                const usuarioGenerado = primeraLetra + apellido; // "gmoreno"
-                
-                // La contraseña es el usuario pero con la primera letra en mayúscula
-                const passGenerada = usuarioGenerado.charAt(0).toUpperCase() + usuarioGenerado.slice(1); // "Gmoreno"
- 
+                const usuarioGenerado = primeraLetra + apellido;
+                const passGenerada = usuarioGenerado.charAt(0).toUpperCase() + usuarioGenerado.slice(1);
                 document.getElementById('usuario').value = usuarioGenerado;
                 document.getElementById('password').value = passGenerada;
             }
         }
  
+        /* ==========================================
+           MODAL ALTA (SIN CAMBIOS EN LÓGICA)
+           ========================================== */
         function abrirModal() {
+            modoEdicion = false;
             document.getElementById('form-personal').reset();
+            document.getElementById('id_empleado_editar').value = '';
+            document.getElementById('modal-titulo').textContent = 'Alta de Nuevo Empleado';
+            document.getElementById('btn-submit-form').textContent = 'Guardar Empleado';
+            document.getElementById('password').required = true;
             document.getElementById('modal-personal').style.display = 'flex';
         }
  
@@ -226,7 +271,64 @@
             document.getElementById('modal-personal').style.display = 'none';
         }
  
-        // GUARDAR EMPLEADO
+        /* ==========================================
+           MODAL EDITAR
+           ========================================== */
+        function abrirModalEditar(dataEncoded) {
+            const emp = JSON.parse(decodeURIComponent(dataEncoded));
+            modoEdicion = true;
+ 
+            // Rellenar el formulario con los datos actuales
+            document.getElementById('id_empleado_editar').value = emp.id_empleado;
+            document.getElementById('nombre_completo').value = emp.nombre_completo;
+            document.getElementById('id_rol').value = emp.id_rol;
+            document.getElementById('telefono').value = emp.telefono || '';
+            document.getElementById('correo').value = emp.correo || '';
+            document.getElementById('usuario').value = emp.usuario;
+            document.getElementById('password').value = ''; // vacío: no cambia si no se escribe nada
+ 
+            // Actualizar título y botón del modal
+            document.getElementById('modal-titulo').textContent = 'Editar Empleado';
+            document.getElementById('btn-submit-form').textContent = 'Actualizar Empleado';
+            document.getElementById('password').required = false; // No obligatorio al editar
+            document.getElementById('modal-personal').style.display = 'flex';
+        }
+ 
+        /* ==========================================
+           MODAL ELIMINAR
+           ========================================== */
+        function abrirModalEliminar(id, nombre) {
+            idEmpleadoAEliminar = id;
+            document.getElementById('texto-confirmar-eliminar').textContent =
+                `¿Estás seguro de que deseas eliminar a "${nombre}"? Esta acción no se puede deshacer.`;
+            document.getElementById('modal-confirmar-eliminar').style.display = 'flex';
+        }
+ 
+        function cerrarModalEliminar() {
+            idEmpleadoAEliminar = null;
+            document.getElementById('modal-confirmar-eliminar').style.display = 'none';
+        }
+ 
+        async function confirmarEliminar() {
+            if (!idEmpleadoAEliminar) return;
+            try {
+                const res = await fetch(`http://localhost:3000/api/usuarios/personal/${idEmpleadoAEliminar}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    cerrarModalEliminar();
+                    cargarPersonal();
+                } else {
+                    alert('Error al eliminar el empleado.');
+                }
+            } catch (error) {
+                alert('No se pudo conectar con el servidor.');
+            }
+        }
+ 
+        /* ==========================================
+           GUARDAR / ACTUALIZAR EMPLEADO (SUBMIT)
+           ========================================== */
         document.getElementById('form-personal').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -239,21 +341,41 @@
                 password: document.getElementById('password').value
             };
  
-            try {
-                const res = await fetch('http://localhost:3000/api/usuarios/personal', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
- 
-                if(res.ok) {
-                    cerrarModal();
-                    cargarPersonal(); // Recarga la tabla
-                } else {
-                    alert('Error al registrar en la base de datos.');
+            // Si estamos editando, usamos PUT; si es alta, usamos POST
+            if (modoEdicion) {
+                const idEditar = document.getElementById('id_empleado_editar').value;
+                try {
+                    const res = await fetch(`http://localhost:3000/api/usuarios/personal/${idEditar}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        cerrarModal();
+                        cargarPersonal();
+                    } else {
+                        alert('Error al actualizar el empleado.');
+                    }
+                } catch (error) {
+                    alert('No se pudo conectar con el servidor.');
                 }
-            } catch (error) {
-                alert('No se pudo conectar con el servidor.');
+            } else {
+                // LÓGICA DE ALTA ORIGINAL (SIN CAMBIOS)
+                try {
+                    const res = await fetch('http://localhost:3000/api/usuarios/personal', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        cerrarModal();
+                        cargarPersonal();
+                    } else {
+                        alert('Error al registrar en la base de datos.');
+                    }
+                } catch (error) {
+                    alert('No se pudo conectar con el servidor.');
+                }
             }
         });
     </script>
