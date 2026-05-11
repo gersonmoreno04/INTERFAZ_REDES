@@ -20,7 +20,7 @@
         .tab-btn.active { background: #002B5C; color: white; }
         .tab-content { display: none; background: white; padding: 25px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .tab-content.active { display: block; }
-
+ 
         /* TABLAS Y BOTONES */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
         th, td { padding: 15px; border-bottom: 1px solid #E0E6ED; text-align: left; }
@@ -30,7 +30,7 @@
         .btn-naranja { background: #F39C12; }
         .btn-azul { background: #2980B9; }
         .btn-rojo { background: #E74C3C; }
-
+ 
         /* ETIQUETAS */
         .sev-s1 { background: #E74C3C; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .sev-s2 { background: #F39C12; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
@@ -39,15 +39,15 @@
     </style>
 </head>
 <body>
-
+ 
     <nav>
         <div class="logo-title">
             <img src="logo_pumatel.png" alt="Logo" style="height: 50px; filter: brightness(0) invert(1);">
             <span>PUMATEL | Network Operation Center (NOC)</span>
         </div>
-        <button class="btn-logout" onclick="window.location.href='admin.html'">VOLVER AL PANEL</button>
+        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
     </nav>
-
+ 
     <div class="contenedor">
         <div class="tabs">
             <button class="tab-btn active" onclick="abrirTab(event, 'tab-fallas'); cargarFallas();">Gestión de Fallas</button>
@@ -55,7 +55,7 @@
             <button class="tab-btn" onclick="abrirTab(event, 'tab-cambios'); cargarCAB();">Gestión de Cambios</button>
             <button class="tab-btn" onclick="abrirTab(event, 'tab-cancelaciones'); cargarOCS();">Cancelaciones (OCS)</button>
         </div>
-
+ 
         <!-- MÓDULO 1: GESTIÓN DE FALLAS -->
         <div id="tab-fallas" class="tab-content active">
             <h2 style="color: #002B5C; margin-top: 0;">Monitoreo de Incidentes Activos</h2>
@@ -76,7 +76,7 @@
                 </tbody>
             </table>
         </div>
-
+ 
         <!-- MÓDULO 2: APROVISIONAMIENTO -->
         <div id="tab-aprovisionamiento" class="tab-content">
             <h2 style="color: #002B5C; margin-top: 0;">Órdenes de Aprovisionamiento (OA)</h2>
@@ -96,7 +96,7 @@
                 </tbody>
             </table>
         </div>
-
+ 
         <!-- MÓDULO 3: GESTIÓN DE CAMBIOS -->
         <div id="tab-cambios" class="tab-content">
             <h2 style="color: #002B5C; margin-top: 0;">Comité de Cambios (CAB)</h2>
@@ -116,7 +116,7 @@
                 </tbody>
             </table>
         </div>
-
+ 
         <!-- MÓDULO 4: CANCELACIÓN DE SERVICIOS -->
         <div id="tab-cancelaciones" class="tab-content">
             <h2 style="color: #002B5C; margin-top: 0;">Órdenes de Cancelación (OCS)</h2>
@@ -137,11 +137,11 @@
             </table>
         </div>
     </div>
-
+ 
     <!-- ==========================================
          VENTANAS EMERGENTES (MODALS) 
          ========================================== -->
-
+ 
     <!-- MODAL DE RESOLUCIÓN DE FALLAS (RCA) -->
     <div id="modal-rca" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
         <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #27AE60;">
@@ -160,7 +160,7 @@
             </form>
         </div>
     </div>
-
+ 
     <!-- MODAL DE APROVISIONAMIENTO (OA) -->
     <div id="modal-oa" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
         <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 650px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #2980B9;">
@@ -191,7 +191,7 @@ ip route 0.0.0.0 0.0.0.0 172.16.10.1
             </div>
         </div>
     </div>
-
+ 
     <!-- MODAL DE CAMBIOS (CAB) -->
     <div id="modal-cab" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
         <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #F39C12;">
@@ -208,7 +208,7 @@ ip route 0.0.0.0 0.0.0.0 172.16.10.1
             </form>
         </div>
     </div>
-
+ 
     <!-- MODAL DE CANCELACIÓN (OCS) -->
     <div id="modal-ocs" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
         <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 600px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #E74C3C;">
@@ -228,7 +228,7 @@ exit
 router bgp 65001
 no neighbor 172.16.10.2 remote-as 65010
                 </div>
-
+ 
                 <div style="margin-bottom: 25px; background: #F8F9FA; padding: 15px; border-radius: 4px; border: 1px solid #E0E6ED;">
                     <label style="font-size: 13px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 10px; cursor: pointer;">
                         <input type="checkbox" id="ocs-equipo-recuperado" style="width: 18px; height: 18px; margin: 0;">
@@ -243,7 +243,7 @@ no neighbor 172.16.10.2 remote-as 65010
             </form>
         </div>
     </div>
-
+ 
     <!-- ==========================================
          SCRIPTS Y LÓGICA DE TIEMPO REAL
          ========================================== -->
@@ -257,48 +257,48 @@ no neighbor 172.16.10.2 remote-as 65010
             document.getElementById(nombreTab).style.display = "block";
             evt.currentTarget.className += " active";
         }
-
+ 
+        // ── DATOS DE SESIÓN ──────────────────────────────────────────
+        const _miId = parseInt(localStorage.getItem('idEmpleado') || '0');
+        const _miNombre = localStorage.getItem('nombreEmpleado') || 'Técnico';
+ 
         // CARGAS DE TABLAS
-        // Modifica la parte de cargarFallas() en tu noc.html
-async function cargarFallas() {
-    const userRole = localStorage.getItem('id_rol'); // Asumiendo que guardas el rol al loguear
-    
-    try {
-        const res = await fetch('http://localhost:3000/api/noc/fallas');
-        const datos = await res.json();
-        let html = '';
-
-        datos.forEach(f => {
-            let claseSev = f.severidad === 'S1' ? 'sev-s1' : (f.severidad === 'S2' ? 'sev-s2' : 'sev-s3');
-            
-            // LÓGICA DE JEFE DE OPERACIONES (Rol 6)
-            let celdaAccion = '';
-            if (userRole == '6' && f.estado === 'Nuevo') {
-                celdaAccion = `
-                    <select onchange="asignarATecnico(${f.id_ticket}, this.value)" class="btn-accion btn-azul">
-                        <option value="">Asignar Técnico...</option>
-                        <option value="4">Carlos Técnico</option>
-                        <option value="8">Diego Pineda</option>
-                    </select>`;
-            } else {
-                celdaAccion = f.estado !== 'Resuelto' ? 
-                    `<button class="btn-accion btn-verde" onclick="abrirModalRCA(${f.id_ticket})">Analizar (RCA)</button>` : 
-                    '✔️ Finalizado';
+        async function cargarFallas() {
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas');
+                const todos = await res.json();
+ 
+                // Solo mostrar tickets asignados a este técnico
+                const datos = todos.filter(f => f.id_tecnico === _miId);
+ 
+                if (datos.length === 0) {
+                    document.getElementById('cuerpo-fallas').innerHTML =
+                        '<tr><td colspan="6" class="texto-vacio">No tienes tickets asignados en este momento.</td></tr>';
+                    return;
+                }
+ 
+                let html = '';
+                datos.forEach(f => {
+                    let claseSev = f.severidad === 'S1' ? 'sev-s1' : (f.severidad === 'S2' ? 'sev-s2' : 'sev-s3');
+                    let celdaAccion = (f.estado !== 'Resuelto' && f.estado !== 'Finalizado')
+                        ? `<button class="btn-accion btn-verde" onclick="abrirModalRCA(${f.id_ticket})">Analizar (RCA)</button>`
+                        : '\u2714\uFE0F Finalizado';
+ 
+                    html += `<tr>
+                        <td><strong>INC-${f.id_ticket}</strong></td>
+                        <td><span class="${claseSev}">${f.severidad || 'S3'}</span></td>
+                        <td>${f.cliente || 'Desconocido'}</td>
+                        <td>${f.descripcion}</td>
+                        <td><strong style="color:${(f.estado === 'Resuelto' || f.estado === 'Finalizado') ? '#27AE60' : '#E74C3C'};">${f.estado.toUpperCase()}</strong></td>
+                        <td>${celdaAccion}</td>
+                    </tr>`;
+                });
+                document.getElementById('cuerpo-fallas').innerHTML = html;
+            } catch (e) {
+                document.getElementById('cuerpo-fallas').innerHTML =
+                    '<tr><td colspan="6" class="texto-vacio">Error de conexión con el servidor.</td></tr>';
             }
-
-            html += `<tr>
-                <td><strong>INC-${f.id_ticket}</strong></td>
-                <td><span class="${claseSev}">${f.severidad || 'S3'}</span></td>
-                <td>${f.cliente || 'Desconocido'}</td>
-                <td>${f.descripcion}</td>
-                <td><strong style="color:${f.estado === 'Resuelto' ? '#27AE60' : '#E74C3C'};">${f.estado.toUpperCase()}</strong></td>
-                <td>${celdaAccion}</td>
-            </tr>`;
-        });
-        document.getElementById('cuerpo-fallas').innerHTML = html;
-    } catch (e) { /* ... */ }
-}
-
+        }
         async function cargarOA() {
             try {
                 const res = await fetch('http://localhost:3000/api/noc/oa');
@@ -319,7 +319,7 @@ async function cargarFallas() {
                 document.getElementById('cuerpo-oa').innerHTML = html;
             } catch (e) { document.getElementById('cuerpo-oa').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
         }
-
+ 
         async function cargarCAB() {
             try {
                 const res = await fetch('http://localhost:3000/api/noc/cab');
@@ -341,7 +341,7 @@ async function cargarFallas() {
                 document.getElementById('cuerpo-cambios').innerHTML = html;
             } catch (e) { document.getElementById('cuerpo-cambios').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
         }
-
+ 
         async function cargarOCS() {
             try {
                 const res = await fetch('http://localhost:3000/api/noc/ocs');
@@ -362,7 +362,7 @@ async function cargarFallas() {
                 document.getElementById('cuerpo-ocs').innerHTML = html;
             } catch (e) { document.getElementById('cuerpo-ocs').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
         }
-
+ 
         // LÓGICA DE MODALS
         // RCA
         function abrirModalRCA(id_ticket) { document.getElementById('rca-id-ticket').value = id_ticket; document.getElementById('form-rca').reset(); document.getElementById('modal-rca').style.display = 'flex'; }
@@ -375,7 +375,7 @@ async function cargarFallas() {
                 if(res.ok) { alert('Ticket cerrado correctamente.'); cerrarModalRCA(); cargarFallas(); }
             } catch (error) { alert('Error de conexión.'); }
         });
-
+ 
         // OA
         function abrirModalOA(id_oa, nombre) { document.getElementById('oa-id-oculto').value = id_oa; document.getElementById('script-cliente-nombre').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); document.getElementById('modal-oa').style.display = 'flex'; }
         function cerrarModalOA() { document.getElementById('modal-oa').style.display = 'none'; }
@@ -385,7 +385,7 @@ async function cargarFallas() {
                 if(res.ok) { alert('Servicio provisionado exitosamente.'); cerrarModalOA(); cargarOA(); }
             } catch (error) { alert('Error de conexión.'); }
         }
-
+ 
         // CAB
         function abrirModalCAB(id_cambio, rollback) { document.getElementById('cab-id-oculto').value = id_cambio; document.getElementById('cab-rollback').value = rollback !== 'null' ? rollback : ''; document.getElementById('modal-cab').style.display = 'flex'; }
         function cerrarModalCAB() { document.getElementById('modal-cab').style.display = 'none'; }
@@ -396,7 +396,7 @@ async function cargarFallas() {
                 if(res.ok) { alert('Cambio en red ejecutado.'); cerrarModalCAB(); cargarCAB(); }
             } catch (error) { alert('Error de conexión.'); }
         });
-
+ 
         // OCS (CANCELACIONES)
         function abrirModalOCS(id_ocs, nombre) { 
             document.getElementById('ocs-id-oculto').value = id_ocs; 
@@ -413,7 +413,7 @@ async function cargarFallas() {
                 if(res.ok) { alert('Cancelación ejecutada.'); cerrarModalOCS(); cargarOCS(); }
             } catch (error) { alert('Error de conexión.'); }
         });
-
+ 
         async function asignarATecnico(idTicket, idTecnico) {
     if(!idTecnico) return;
     
@@ -431,7 +431,21 @@ async function cargarFallas() {
         alert('Error al conectar con el servidor.');
     }
 }
-
+ 
+        // CERRAR SESIÓN
+        function cerrarSesion() {
+            localStorage.removeItem('idRol');
+            localStorage.removeItem('nombreEmpleado');
+            localStorage.removeItem('idEmpleado');
+            window.location.href = 'login.html';
+        }
+ 
+        // Verificar que sea técnico NOC (rol 2); si es rol 6 redirigir a su panel
+        (function() {
+            const rol = parseInt(localStorage.getItem('idRol') || '0');
+            if (rol === 6) window.location.href = 'noc_admin.html';
+        })();
+ 
         // INIT
         window.onload = cargarFallas;
     </script>

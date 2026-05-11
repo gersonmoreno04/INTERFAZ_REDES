@@ -75,7 +75,7 @@
         }
         .btn-logout { color: #E74C3C; }
         .btn-logout:hover { background-color: #4A1A1A; }
-
+ 
         /* EL CONTENIDO PRINCIPAL */
         .main-content { 
             flex-grow: 1; 
@@ -108,7 +108,7 @@
             font-weight: 600; 
             color: #002B5C; 
         }
-
+ 
         /* LAS VENTANAS */
         .contenido-ventana { 
             padding: 40px; 
@@ -154,7 +154,7 @@
             font-weight: bold; 
             color: #002B5C; 
         }
-
+ 
         /* TABLAS Y BOTONES */
         table { 
             width: 100%; 
@@ -191,7 +191,7 @@
     </style>
 </head>
 <body>
-
+ 
     <div class="sidebar" id="miSidebar">
         <div class="sidebar-header">
             <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 70px; width: auto; filter: brightness(0) invert(1);">
@@ -202,12 +202,12 @@
         <button class="menu-btn" onclick="abrirVentana('ventana-clientes', this)">Directorio de Clientes</button>
         <button class="menu-btn" onclick="abrirVentana('ventana-trafico', this)">Gestión de Tickets NOC</button>
         <button class="menu-btn" onclick="abrirVentana('ventana-portales', this)">Accesos de Personal</button>
-
+ 
         <div class="menu-bottom">
-            <button class="menu-btn btn-logout" onclick="window.location.href='/'">Finalizar Sesión</button>
+            <button class="menu-btn btn-logout" onclick="cerrarSesion()">Finalizar Sesión</button>
         </div>
     </div>
-
+ 
     <div class="main-content" id="mainContent">
         
         <header class="header">
@@ -219,7 +219,7 @@
             </div>
             <div class="user-info">Panel de Dirección</div>
         </header>
-
+ 
         <div id="ventana-resumen" class="contenido-ventana activa">
             <h2>Métricas Operativas</h2>
             
@@ -237,7 +237,7 @@
                     <p id="kpi-inventario">--</p>
                 </div>
             </div>
-
+ 
             <div style="background: #FFFFFF; padding: 25px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <h3 style="margin-top: 0; color: #002B5C; font-size: 16px;">Registro de Actividad Reciente</h3>
                 <ul class="actividad-lista" id="lista-bitacora">
@@ -245,7 +245,7 @@
                 </ul>
             </div>
         </div>
-
+ 
         <div id="ventana-clientes" class="contenido-ventana">
             <h2>Base de Datos de Clientes</h2>
             <button class="btn-primario" onclick="cargarClientes()" style="margin-bottom: 20px;">Actualizar Registros</button>
@@ -253,7 +253,7 @@
                 <p style="color: #7F8C8D; font-size: 14px;">Presione "Actualizar Registros" para sincronizar con la base de datos.</p>
             </div>
         </div>
-
+ 
         <div id="ventana-trafico" class="contenido-ventana">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <div>
@@ -277,7 +277,7 @@
                 </tr>
             </table>
         </div>
-
+ 
         <div id="ventana-portales" class="contenido-ventana">
             <h2>Módulos del Sistema Operativo</h2>
             <p style="color: #7F8C8D; font-size: 14px; margin-bottom: 20px;">Acceso directo a las interfaces de las áreas operativas de Pumatel.</p>
@@ -302,9 +302,9 @@
                 </a>
             </div>
         </div>
-
+ 
     </div>
-
+ 
     <script>
         window.onload = function() {
             const nombre = localStorage.getItem('nombreEmpleado') || 'Administrador';
@@ -314,29 +314,36 @@
             cargarMetricas(); 
             cargarTicketsNOC();
         };
-
+ 
         function toggleSidebar() {
             const sidebar = document.getElementById("miSidebar");
             sidebar.classList.toggle("oculto");
         }
-
+ 
+        function cerrarSesion() {
+            localStorage.removeItem('idRol');
+            localStorage.removeItem('nombreEmpleado');
+            localStorage.removeItem('idEmpleado');
+            window.location.href = 'login.html';
+        }
+ 
         function abrirVentana(idVentana, botonPresionado) {
             const ventanas = document.querySelectorAll('.contenido-ventana');
             ventanas.forEach(ventana => ventana.classList.remove('activa'));
-
+ 
             document.getElementById(idVentana).classList.add('activa');
-
+ 
             const botones = document.querySelectorAll('.menu-btn');
             botones.forEach(btn => btn.classList.remove('activo'));
-
+ 
             botonPresionado.classList.add('activo');
         }
-
+ 
         async function cargarClientes() {
             try {
                 const respuesta = await fetch('http://localhost:3000/api/usuarios/clientes'); 
                 const datos = await respuesta.json();
-
+ 
                 let html = '<table><tr><th>ID Cliente</th><th>Nombre Completo</th><th>Correo Electrónico</th><th>Teléfono</th><th>Dirección de Servicio</th></tr>';
                 datos.forEach(c => {
                     html += `<tr>
@@ -353,7 +360,7 @@
                 document.getElementById('tabla-clientes').innerHTML = '<p style="color:#C0392B;">Error de conexión: No se pudo enlazar con la base de datos.</p>';
             }
         }
-
+ 
         async function cargarBitacora() {
             try {
                 const respuesta = await fetch('http://localhost:3000/api/bitacora');
@@ -364,7 +371,7 @@
                     // Convertir la fecha de MySQL a hora local legible (Ej: 10:45 AM)
                     const fecha = new Date(log.fecha);
                     const horaFormateada = fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-
+ 
                     html += `
                         <li>
                             <span class="badge">${log.modulo}</span> 
@@ -377,7 +384,7 @@
                 document.getElementById('lista-bitacora').innerHTML = '<li style="color:red;">Error al cargar bitácora.</li>';
             }
         }
-
+ 
         async function cargarMetricas() {
             try {
                 const res = await fetch('http://localhost:3000/api/dashboard/metricas');
@@ -403,13 +410,13 @@
                 document.getElementById('kpi-inventario').innerText = "X";
             }
         }
-
+ 
         async function cargarTicketsNOC() {
             try {
                 // Usamos la misma ruta que ya creamos para el Jefe del NOC
                 const respuesta = await fetch('http://localhost:3000/api/tickets?idRol=6');
                 const tickets = await respuesta.json();
-
+ 
                 let html = `
                     <tr>
                         <th>Ticket ID</th>
@@ -420,11 +427,11 @@
                         <th>Técnico Asignado</th>
                     </tr>
                 `;
-
+ 
                 tickets.forEach(t => {
                     // Ponemos color rojo si es crítica o alta, verde si es normal o baja
                     let clasePrioridad = (t.prioridad === 'Critica' || t.prioridad === 'Alta') ? 'estado-critico' : 'estado-normal';
-
+ 
                     html += `
                         <tr>
                             <td><strong>#TK-${t.id_ticket}</strong></td>
@@ -436,19 +443,19 @@
                         </tr>
                     `;
                 });
-
+ 
                 if (tickets.length === 0) {
                     html += '<tr><td colspan="6" style="text-align:center;">No hay tickets registrados en el sistema.</td></tr>';
                 }
-
+ 
                 document.getElementById('tabla-tickets-admin').innerHTML = html;
-
+ 
             } catch (error) {
                 console.error("Error al cargar tickets:", error);
                 document.getElementById('tabla-tickets-admin').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error al conectar con la base de datos de tickets.</td></tr>';
             }
         }
-
+ 
     </script>
 </body>
 </html>

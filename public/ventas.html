@@ -19,12 +19,12 @@
         
         .btn-primario { background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .btn-primario:hover { background-color: #001A38; }
-
+ 
         /* TABLA */
         table { width: 100%; border-collapse: collapse; background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
         th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
-
+ 
         /* MODAL DE NUEVO CONTRATO */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 43, 92, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 750px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; max-height: 90vh; overflow-y: auto;}
@@ -44,24 +44,24 @@
     </style>
 </head>
 <body>
-
+ 
     <nav>
         <div style="display: flex; align-items: center; gap: 20px; color: #FFFFFF; font-weight: bold; letter-spacing: 1px;">
             <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 65px; width: auto; filter: brightness(0) invert(1);">
             <div style="font-size: 20px;">PUMATEL INTRANET | MÓDULO COMERCIAL</div>
         </div>
         <div class="nav-buttons">
-            <button class="btn-admin" onclick="window.location.href='admin.html'">VOLVER AL PANEL</button>
-            <button class="btn-logout" onclick="window.location.href='login.html'">CERRAR SESIÓN</button>
+            <button class="btn-admin" id="btn-volver-admin" style="display:none;" onclick="window.location.href='admin.html'">⬅ PANEL ADMIN</button>
+            <button class="btn-logout" onclick="cerrarSesion()">CERRAR SESIÓN</button>
         </div>
     </nav>
-
+ 
     <div class="contenedor">
         <div class="header-seccion">
             <h1>Cartera de Clientes Activos</h1>
             <button class="btn-primario" onclick="abrirModal()">+ Registrar Nuevo Contrato</button>
         </div>
-
+ 
         <table>
             <thead>
                 <tr>
@@ -78,14 +78,14 @@
             </tbody>
         </table>
     </div>
-
+ 
     <div class="modal-overlay" id="modal-venta">
         <div class="modal-box">
             <div class="modal-header">
                 <h2>Generar Nuevo Contrato de Servicio</h2>
                 <button class="btn-cerrar" onclick="cerrarModal()">×</button>
             </div>
-
+ 
             <form id="form-venta">
                 <div class="form-grid">
                     
@@ -95,24 +95,24 @@
                         <label>Nombre Completo</label>
                         <input type="text" id="nombre_completo" required placeholder="Nombre legal para el contrato">
                     </div>
-
+ 
                     <div class="form-group">
                         <label>Correo Electrónico</label>
                         <input type="email" id="email" required placeholder="cliente@ejemplo.com">
                     </div>
-
+ 
                     <div class="form-group">
                         <label>Teléfono de Contacto</label>
                         <input type="text" id="telefono" required placeholder="A 10 dígitos">
                     </div>
-
+ 
                     <div class="form-group full-width">
                         <label>Dirección de Instalación</label>
                         <input type="text" id="direccion" required placeholder="Calle, Número, Colonia, C.P.">
                     </div>
-
+ 
                     <div class="seccion-titulo">2. DETALLES DEL SERVICIO A CONTRATAR</div>
-
+ 
                     <div class="form-group">
                         <label>Plan Contratado</label>
                         <select id="plan_contratado" required>
@@ -123,12 +123,12 @@
                             <option value="Empresarial 1 Gbps">Plan Empresarial - 1 Gbps</option>
                         </select>
                     </div>
-
+ 
                     <div class="form-group">
                         <label>Línea Telefónica Asignada</label>
                         <input type="text" id="linea_telefonica" placeholder="Ej. 55-XXXX-XXXX">
                     </div>
-
+ 
                     <div class="form-group full-width" id="contenedor-series">
                         <label>Número(s) de Serie (Equipos en Almacén)</label>
                         <div class="grupo-serie" style="display: flex; gap: 10px; margin-bottom: 8px;">
@@ -136,9 +136,9 @@
                             <button type="button" class="btn-primario" onclick="agregarSerie()" style="background-color: #27AE60; padding: 10px 15px;">+</button>
                         </div>
                     </div>
-
+ 
                 </div>
-
+ 
                 <div style="text-align: right; margin-top: 25px;">
                     <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
                     <button type="submit" class="btn-primario">Procesar Alta y Asignar Equipo(s)</button>
@@ -146,10 +146,22 @@
             </form>
         </div>
     </div>
-
+ 
     <script>
-        window.onload = cargarClientes;
-
+        window.onload = function() {
+            cargarClientes();
+            if (parseInt(localStorage.getItem('idRol') || '0') === 3) {
+                document.getElementById('btn-volver-admin').style.display = 'inline-block';
+            }
+        };
+ 
+        function cerrarSesion() {
+            localStorage.removeItem('idRol');
+            localStorage.removeItem('nombreEmpleado');
+            localStorage.removeItem('idEmpleado');
+            window.location.href = 'login.html';
+        }
+ 
         // 1. CARGAR CLIENTES DESDE LA BASE DE DATOS
         async function cargarClientes() {
             try {
@@ -174,7 +186,7 @@
                 document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión con la base de datos.</td></tr>';
             }
         }
-
+ 
         // 2. CONTROL DEL MODAL
         function abrirModal() {
             document.getElementById('form-venta').reset();
@@ -191,11 +203,11 @@
             
             document.getElementById('modal-venta').style.display = 'flex';
         }
-
+ 
         function cerrarModal() {
             document.getElementById('modal-venta').style.display = 'none';
         }
-
+ 
         // FUNCIÓN PARA AGREGAR MÁS CAMPOS DE NÚMEROS DE SERIE
         function agregarSerie() {
             const contenedor = document.getElementById('contenedor-series');
@@ -208,7 +220,7 @@
             `;
             contenedor.appendChild(div);
         }
-
+ 
         // 3. ENVIAR LA TRANSACCIÓN AL BACKEND
         document.getElementById('form-venta').addEventListener('submit', async (e) => {
             e.preventDefault(); 
@@ -226,16 +238,16 @@
                 linea_telefonica: document.getElementById('linea_telefonica').value,
                 numero_serie: arraySeries // <- Aquí mandamos la lista de equipos
             };
-
+ 
             try {
                 const res = await fetch('http://localhost:3000/api/usuarios/registro', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
+ 
                 const respuestaBD = await res.json();
-
+ 
                 if(res.ok) {
                     alert('¡Venta Exitosa!\n\nSe ha generado el contrato: ' + respuestaBD.numero_usuario);
                     cerrarModal();

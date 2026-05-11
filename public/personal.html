@@ -19,12 +19,12 @@
         
         .btn-primario { background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .btn-primario:hover { background-color: #001A38; }
-
+ 
         /* TABLA */
         table { width: 100%; border-collapse: collapse; background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
         th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
-
+ 
         /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 43, 92, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; }
@@ -43,24 +43,24 @@
     </style>
 </head>
 <body>
-
+ 
     <nav>
         <div style="display: flex; align-items: center; gap: 20px; color: #FFFFFF; font-weight: bold; letter-spacing: 1px;">
             <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 65px; width: auto; filter: brightness(0) invert(1);">
             <div style="font-size: 20px;">PUMATEL INTRANET | RECURSOS HUMANOS</div>
         </div>
         <div class="nav-buttons">
-            <button class="btn-admin" onclick="window.location.href='admin.html'">VOLVER AL PANEL</button>
-            <button class="btn-logout" onclick="window.location.href='login.html'">CERRAR SESIÓN</button>
+            <button class="btn-admin" id="btn-volver-admin" style="display:none;" onclick="window.location.href='admin.html'">⬅ PANEL ADMIN</button>
+            <button class="btn-logout" onclick="cerrarSesion()">CERRAR SESIÓN</button>
         </div>
     </nav>
-
+ 
     <div class="contenedor">
         <div class="header-seccion">
             <h1>Directorio y Accesos de Personal</h1>
             <button class="btn-primario" onclick="abrirModal()">+ Dar de Alta Empleado</button>
         </div>
-
+ 
         <table>
             <thead>
                 <tr>
@@ -77,14 +77,14 @@
             </tbody>
         </table>
     </div>
-
+ 
     <div class="modal-overlay" id="modal-personal">
         <div class="modal-box">
             <div class="modal-header">
                 <h2>Alta de Nuevo Empleado</h2>
                 <button class="btn-cerrar" onclick="cerrarModal()">×</button>
             </div>
-
+ 
             <form id="form-personal">
                 <div class="form-grid">
                     
@@ -92,7 +92,7 @@
                         <label>Nombre Completo</label>
                         <input type="text" id="nombre_completo" required placeholder="Ej. Gerson Moreno" onkeyup="generarCredenciales()">
                     </div>
-
+ 
                     <div class="form-group">
                         <label>Departamento / Rol</label>
                         <select id="id_rol" required>
@@ -104,7 +104,7 @@
                             <option value="5">Almacén y Logística</option>
                         </select>
                     </div>
-
+ 
                     <div class="form-group">
                         <label>Teléfono</label>
                         <input type="text" id="telefono" placeholder="Opcional">
@@ -114,7 +114,7 @@
                         <label>Correo Electrónico</label>
                         <input type="email" id="correo" placeholder="correo@ejemplo.com">
                     </div>
-
+ 
                     <div class="credenciales-box form-grid">
                         <div class="form-group full-width" style="margin-bottom: 0;">
                             <label style="color: #F39C12; font-size: 11px;">Credenciales de Acceso (Autogeneradas)</label>
@@ -128,9 +128,9 @@
                             <input type="text" id="password" required>
                         </div>
                     </div>
-
+ 
                 </div>
-
+ 
                 <div style="text-align: right; margin-top: 25px;">
                     <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
                     <button type="submit" class="btn-primario">Guardar Empleado</button>
@@ -138,10 +138,22 @@
             </form>
         </div>
     </div>
-
+ 
     <script>
-        window.onload = cargarPersonal;
-
+        window.onload = function() {
+            cargarPersonal();
+            if (parseInt(localStorage.getItem('idRol') || '0') === 3) {
+                document.getElementById('btn-volver-admin').style.display = 'inline-block';
+            }
+        };
+ 
+        function cerrarSesion() {
+            localStorage.removeItem('idRol');
+            localStorage.removeItem('nombreEmpleado');
+            localStorage.removeItem('idEmpleado');
+            window.location.href = 'login.html';
+        }
+ 
         async function cargarPersonal() {
             try {
                 const res = await fetch('http://localhost:3000/api/usuarios/personal');
@@ -156,7 +168,7 @@
                     if(emp.id_rol === 4) nombreRol = "Ventas";
                     if(emp.id_rol === 5) nombreRol = "Almacén";
                     if(emp.id_rol === 6) nombreRol = "Jefe NOC";
-
+ 
                     html += `
                         <tr>
                             <td><strong>${emp.id_empleado}</strong></td>
@@ -173,7 +185,7 @@
                 document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión.</td></tr>';
             }
         }
-
+ 
         /* ==========================================
            LA MAGIA DEL GENERADOR DE CREDENCIALES
            ========================================== */
@@ -186,7 +198,7 @@
                 document.getElementById('password').value = '';
                 return;
             }
-
+ 
             // Dividimos el nombre por espacios (Ej: "Gerson Moreno")
             const partes = nombre.split(' ');
             
@@ -199,21 +211,21 @@
                 
                 // La contraseña es el usuario pero con la primera letra en mayúscula
                 const passGenerada = usuarioGenerado.charAt(0).toUpperCase() + usuarioGenerado.slice(1); // "Gmoreno"
-
+ 
                 document.getElementById('usuario').value = usuarioGenerado;
                 document.getElementById('password').value = passGenerada;
             }
         }
-
+ 
         function abrirModal() {
             document.getElementById('form-personal').reset();
             document.getElementById('modal-personal').style.display = 'flex';
         }
-
+ 
         function cerrarModal() {
             document.getElementById('modal-personal').style.display = 'none';
         }
-
+ 
         // GUARDAR EMPLEADO
         document.getElementById('form-personal').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -226,14 +238,14 @@
                 usuario: document.getElementById('usuario').value,
                 password: document.getElementById('password').value
             };
-
+ 
             try {
                 const res = await fetch('http://localhost:3000/api/usuarios/personal', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
+ 
                 if(res.ok) {
                     cerrarModal();
                     cargarPersonal(); // Recarga la tabla

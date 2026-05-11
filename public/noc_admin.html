@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Panel NOC Admin</title>
+    <style>
+        /* BASE */
+        * { box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #0D1B2A; color: #E0E6ED; min-height: 100vh; }
+ 
+        /* NAV */
+        nav {
+            background: linear-gradient(90deg, #001A38 0%, #002B5C 100%);
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #D4AF37;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+        .nav-left { display: flex; align-items: center; gap: 18px; }
+        .nav-left img { height: 46px; filter: brightness(0) invert(1); }
+        .nav-title { color: white; font-weight: 700; font-size: 17px; letter-spacing: 0.5px; }
+        .nav-title span { display: block; font-size: 11px; font-weight: 400; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; margin-top: 2px; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-user { color: #A0AEC0; font-size: 13px; }
+        .nav-user strong { color: #D4AF37; }
+        .btn-logout {
+            background: transparent;
+            color: #E74C3C;
+            border: 1.5px solid #E74C3C;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover { background: #E74C3C; color: white; }
+ 
+        /* MAIN */
+        .contenedor { padding: 30px 40px; max-width: 1400px; margin: auto; }
+ 
+        /* ENCABEZADO SECCIÓN */
+        .seccion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .seccion-header h2 { margin: 0; color: #D4AF37; font-size: 22px; }
+        .seccion-header p { margin: 4px 0 0; color: #7F8C8D; font-size: 13px; }
+ 
+        /* STATS BAR */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #162032;
+            border: 1px solid #1E3A5F;
+            border-radius: 10px;
+            padding: 18px 24px;
+            flex: 1;
+            min-width: 160px;
+            text-align: center;
+        }
+        .stat-card .numero { font-size: 32px; font-weight: 800; color: #D4AF37; }
+        .stat-card .etiqueta { font-size: 12px; color: #7F8C8D; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        .stat-card.nuevo .numero { color: #E74C3C; }
+        .stat-card.progreso .numero { color: #F39C12; }
+        .stat-card.fin .numero { color: #27AE60; }
+ 
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 0;
+            border-bottom: 2px solid #1E3A5F;
+        }
+        .tab-btn {
+            background: #162032;
+            color: #7F8C8D;
+            border: 1px solid #1E3A5F;
+            border-bottom: none;
+            padding: 12px 24px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: #D4AF37; background: #1E3A5F; }
+        .tab-btn.active { background: #1E3A5F; color: #D4AF37; border-color: #D4AF37; border-bottom: 2px solid #1E3A5F; }
+        .tab-content { display: none; background: #162032; border: 1px solid #1E3A5F; border-top: none; padding: 25px; border-radius: 0 0 10px 10px; }
+        .tab-content.active { display: block; }
+ 
+        /* TABLA */
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { background: #0D1B2A; color: #D4AF37; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; padding: 14px 16px; text-align: left; border-bottom: 2px solid #1E3A5F; }
+        td { padding: 14px 16px; border-bottom: 1px solid #1E3A5F; color: #C8D6E5; vertical-align: middle; }
+        tr:hover td { background: rgba(212, 175, 55, 0.04); }
+        .texto-vacio { text-align: center; color: #4A5568; font-style: italic; padding: 30px; }
+ 
+        /* BADGES */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .badge-nuevo { background: rgba(231,76,60,0.15); color: #E74C3C; border: 1px solid #E74C3C; }
+        .badge-revision { background: rgba(243,156,18,0.15); color: #F39C12; border: 1px solid #F39C12; }
+        .badge-espera { background: rgba(52,152,219,0.15); color: #3498DB; border: 1px solid #3498DB; }
+        .badge-fin { background: rgba(39,174,96,0.15); color: #27AE60; border: 1px solid #27AE60; }
+        .sev-s1 { background: #E74C3C; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+        .sev-s2 { background: #F39C12; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+        .sev-s3 { background: #3498DB; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+ 
+        /* SELECT ASIGNAR */
+        .select-asignar {
+            background: #0D1B2A;
+            color: #D4AF37;
+            border: 1.5px solid #D4AF37;
+            border-radius: 6px;
+            padding: 7px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            min-width: 200px;
+            transition: all 0.2s;
+        }
+        .select-asignar:hover { background: #1E3A5F; }
+        .select-asignar option { background: #0D1B2A; color: white; }
+ 
+        .btn-accion { padding: 8px 14px; border: none; border-radius: 6px; color: white; font-weight: 700; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+        .btn-verde { background: #27AE60; }
+        .btn-verde:hover { background: #1E8449; }
+        .btn-azul { background: #2980B9; }
+        .btn-azul:hover { background: #1F618D; }
+        .btn-naranja { background: #F39C12; }
+        .btn-rojo { background: #E74C3C; }
+ 
+        /* TÉCNICOS */
+        .tecnicos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+        }
+        .tecnico-card {
+            background: #0D1B2A;
+            border: 1px solid #1E3A5F;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tecnico-card .nombre { font-weight: 700; color: #D4AF37; font-size: 15px; }
+        .tecnico-card .username { font-size: 12px; color: #7F8C8D; }
+        .tecnico-card .tickets-count { font-size: 28px; font-weight: 800; }
+        .tecnico-card .tickets-label { font-size: 11px; color: #7F8C8D; text-transform: uppercase; }
+ 
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.abierto { display: flex; }
+        .modal-box {
+            background: #162032;
+            border: 1px solid #1E3A5F;
+            border-top: 4px solid #D4AF37;
+            padding: 32px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: fadeInModal 0.2s ease;
+        }
+        @keyframes fadeInModal { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-box h3 { color: #D4AF37; margin: 0 0 6px; }
+        .modal-box p { color: #7F8C8D; font-size: 13px; margin: 0 0 20px; }
+        .modal-label { font-weight: 700; font-size: 12px; color: #A0AEC0; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-valor { background: #0D1B2A; border: 1px solid #1E3A5F; border-radius: 6px; padding: 10px 14px; color: #E0E6ED; font-size: 14px; margin-bottom: 16px; }
+        .modal-select {
+            width: 100%;
+            background: #0D1B2A;
+            color: #E0E6ED;
+            border: 1.5px solid #D4AF37;
+            border-radius: 6px;
+            padding: 11px 14px;
+            font-size: 14px;
+            margin-bottom: 24px;
+            outline: none;
+        }
+        .modal-select option { background: #0D1B2A; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+        .btn-cancelar {
+            background: transparent;
+            border: 1.5px solid #7F8C8D;
+            color: #7F8C8D;
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .btn-cancelar:hover { border-color: #E74C3C; color: #E74C3C; }
+        .btn-confirmar {
+            background: #D4AF37;
+            color: #0D1B2A;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .btn-confirmar:hover { background: #F0C842; }
+ 
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1E3A5F;
+            border: 1px solid #D4AF37;
+            color: #E0E6ED;
+            padding: 14px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.exito { border-color: #27AE60; }
+        .toast.error { border-color: #E74C3C; }
+ 
+        /* REFRESH */
+        .btn-refresh {
+            background: #1E3A5F;
+            color: #D4AF37;
+            border: 1px solid #D4AF37;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-refresh:hover { background: #D4AF37; color: #0D1B2A; }
+ 
+        /* PRIORIDAD */
+        .pri-alta { color: #E74C3C; font-weight: 700; }
+        .pri-critica { color: #C0392B; font-weight: 800; text-transform: uppercase; }
+        .pri-normal { color: #F39C12; }
+        .pri-baja { color: #27AE60; }
+ 
+        @media (max-width: 768px) {
+            .contenedor { padding: 16px; }
+            .stats-bar { gap: 10px; }
+            .nav-user { display: none; }
+        }
+    </style>
+</head>
+<body>
+ 
+    <nav>
+        <div class="nav-left">
+            <img src="logo_pumatel.png" alt="Logo">
+            <div class="nav-title">
+                PUMATEL
+                <span>NOC Admin — Centro de Operaciones</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-user">Sesión: <strong id="nav-nombre">Cargando...</strong></div>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </nav>
+ 
+    <div class="contenedor">
+ 
+        <!-- STATS -->
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-card nuevo">
+                <div class="numero" id="stat-nuevos">--</div>
+                <div class="etiqueta">Tickets Nuevos</div>
+            </div>
+            <div class="stat-card progreso">
+                <div class="numero" id="stat-revision">--</div>
+                <div class="etiqueta">En Revisión</div>
+            </div>
+            <div class="stat-card">
+                <div class="numero" id="stat-espera">--</div>
+                <div class="etiqueta">En Espera</div>
+            </div>
+            <div class="stat-card fin">
+                <div class="numero" id="stat-fin">--</div>
+                <div class="etiqueta">Finalizados</div>
+            </div>
+        </div>
+ 
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="abrirTab(event, 'tab-tickets')">📋 Asignación de Tickets</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-tecnicos'); cargarTecnicos();">👥 Carga de Técnicos</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-historial'); cargarHistorial();">📜 Historial Completo</button>
+        </div>
+ 
+        <!-- TAB 1: ASIGNACIÓN -->
+        <div id="tab-tickets" class="tab-content active">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <div>
+                    <h3 style="margin:0; color:#E0E6ED;">Tickets sin Asignar</h3>
+                    <p style="margin:4px 0 0; color:#7F8C8D; font-size:13px;">Seleccione el técnico responsable para cada incidente nuevo.</p>
+                </div>
+                <button class="btn-refresh" onclick="cargarTickets()">⟳ Actualizar</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Prioridad</th>
+                        <th>Severidad</th>
+                        <th>Cliente</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Asignar Técnico</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tickets">
+                    <tr><td colspan="7" class="texto-vacio">Cargando tickets...</td></tr>
+                </tbody>
+            </table>
+        </div>
+ 
+        <!-- TAB 2: TÉCNICOS -->
+        <div id="tab-tecnicos" class="tab-content">
+            <div style="margin-bottom:18px;">
+                <h3 style="margin:0; color:#E0E6ED;">Carga Actual por Técnico</h3>
+                <p style="margin:4px 0 0; color:#7F8C8D; font-size:13px;">Número de tickets activos asignados a cada ingeniero NOC.</p>
+            </div>
+            <div class="tecnicos-grid" id="grid-tecnicos">
+                <div style="color:#7F8C8D; font-style:italic; padding:20px;">Cargando técnicos...</div>
+            </div>
+        </div>
+ 
+        <!-- TAB 3: HISTORIAL -->
+        <div id="tab-historial" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                <div>
+                    <h3 style="margin:0; color:#E0E6ED;">Historial de Tickets</h3>
+                    <p style="margin:4px 0 0; color:#7F8C8D; font-size:13px;">Todos los incidentes registrados en el sistema.</p>
+                </div>
+                <button class="btn-refresh" onclick="cargarHistorial()">⟳ Actualizar</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Prioridad</th>
+                        <th>Cliente</th>
+                        <th>Descripción</th>
+                        <th>Técnico Asignado</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-historial">
+                    <tr><td colspan="7" class="texto-vacio">Cargando historial...</td></tr>
+                </tbody>
+            </table>
+        </div>
+ 
+    </div>
+ 
+    <!-- MODAL ASIGNACIÓN -->
+    <div id="modal-asignar" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Asignar Ticket a Técnico NOC</h3>
+            <p>Seleccione el ingeniero que atenderá este incidente.</p>
+ 
+            <input type="hidden" id="modal-id-ticket">
+ 
+            <label class="modal-label">Ticket</label>
+            <div class="modal-valor" id="modal-ticket-info">—</div>
+ 
+            <label class="modal-label">Cliente</label>
+            <div class="modal-valor" id="modal-cliente-info">—</div>
+ 
+            <label class="modal-label">Descripción</label>
+            <div class="modal-valor" id="modal-desc-info" style="font-size:13px; line-height:1.5; max-height:80px; overflow-y:auto;">—</div>
+ 
+            <label class="modal-label" style="margin-top:8px;">Técnico Asignado *</label>
+            <select class="modal-select" id="modal-select-tecnico">
+                <option value="">— Seleccione un técnico —</option>
+            </select>
+ 
+            <div class="modal-footer">
+                <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn-confirmar" onclick="confirmarAsignacion()">✓ Confirmar Asignación</button>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+ 
+    <script>
+        // =========================================================
+        //  DATOS DE SESIÓN
+        // =========================================================
+        const nombre = localStorage.getItem('nombreEmpleado') || 'NOC Admin';
+        const idRol  = parseInt(localStorage.getItem('idRol') || '0');
+ 
+        document.getElementById('nav-nombre').innerText = nombre;
+ 
+        // Solo el rol 6 puede estar aquí
+        if (idRol !== 6) {
+            alert('Acceso restringido. Solo el Jefe NOC puede acceder a esta página.');
+            window.location.href = 'login.html';
+        }
+ 
+        // =========================================================
+        //  TÉCNICOS — siempre en tiempo real desde /api/usuarios/personal
+        // =========================================================
+        let tecnicosList = [];
+ 
+        async function cargarListaTecnicos() {
+            try {
+                // El endpoint real del backend es /api/usuarios/personal
+                const res = await fetch('http://localhost:3000/api/usuarios/personal');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                // id_rol === 2 → Técnico NOC
+                tecnicosList = data.filter(e => parseInt(e.id_rol) === 2);
+            } catch(err) {
+                console.error('Error cargando técnicos:', err);
+                tecnicosList = [];
+            }
+            actualizarSelectTecnico();
+        }
+ 
+        // Repopula el <select> del modal con la lista más reciente
+        function actualizarSelectTecnico() {
+            const select = document.getElementById('modal-select-tecnico');
+            const valorActual = select.value; // conservar selección si ya hay una
+            select.innerHTML = '<option value="">— Seleccione un técnico —</option>';
+            if (tecnicosList.length === 0) {
+                select.innerHTML += '<option value="" disabled>Sin técnicos registrados</option>';
+            } else {
+                tecnicosList.forEach(t => {
+                    // El controller devuelve "usuario" (alias de username)
+                    const user = t.username || t.usuario || '';
+                    select.innerHTML += `<option value="${t.id_empleado}">${t.nombre_completo} (@${user})</option>`;
+                });
+            }
+            if (valorActual) select.value = valorActual;
+        }
+ 
+        // =========================================================
+        //  TABS
+        // =========================================================
+        function abrirTab(evt, nombreTab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(nombreTab).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+ 
+        // =========================================================
+        //  TICKETS SIN ASIGNAR
+        // =========================================================
+        async function cargarTickets() {
+            document.getElementById('cuerpo-tickets').innerHTML = '<tr><td colspan="7" class="texto-vacio">Cargando...</td></tr>';
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas');
+                const datos = await res.json();
+ 
+                // Contadores para stats
+                let nuevos = 0, revision = 0, espera = 0, fin = 0;
+                datos.forEach(f => {
+                    const est = (f.estado || '').toLowerCase();
+                    if (est === 'nuevo') nuevos++;
+                    else if (est === 'en revision') revision++;
+                    else if (est.includes('espera') || est.includes('autorizacion')) espera++;
+                    else if (est === 'finalizado' || est === 'resuelto') fin++;
+                });
+                document.getElementById('stat-nuevos').innerText  = nuevos;
+                document.getElementById('stat-revision').innerText = revision;
+                document.getElementById('stat-espera').innerText  = espera;
+                document.getElementById('stat-fin').innerText     = fin;
+ 
+                // Solo tickets sin asignar (estado Nuevo)
+                const sinAsignar = datos.filter(f => f.estado === 'Nuevo');
+ 
+                if (sinAsignar.length === 0) {
+                    document.getElementById('cuerpo-tickets').innerHTML =
+                        '<tr><td colspan="7" class="texto-vacio">✅ No hay tickets pendientes de asignación.</td></tr>';
+                    return;
+                }
+ 
+                let html = '';
+                sinAsignar.forEach(f => {
+                    const claseSev = f.severidad === 'S1' ? 'sev-s1' : (f.severidad === 'S2' ? 'sev-s2' : 'sev-s3');
+                    const clasePri = f.prioridad === 'Critica' ? 'pri-critica' :
+                                     f.prioridad === 'Alta'    ? 'pri-alta'    :
+                                     f.prioridad === 'Baja'    ? 'pri-baja'    : 'pri-normal';
+                    const fecha = new Date(f.fecha_creacion).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+                    const desc = f.descripcion.length > 60 ? f.descripcion.substring(0, 60) + '…' : f.descripcion;
+ 
+                    html += `<tr>
+                        <td><strong style="color:#D4AF37;">INC-${f.id_ticket}</strong></td>
+                        <td><span class="${clasePri}">${f.prioridad || 'Normal'}</span></td>
+                        <td><span class="${claseSev}">${f.severidad || 'S3'}</span></td>
+                        <td>${f.cliente || 'Desconocido'}</td>
+                        <td title="${f.descripcion}">${desc}</td>
+                        <td style="color:#7F8C8D; font-size:12px;">${fecha}</td>
+                        <td>
+                            <button class="btn-accion btn-azul" onclick="abrirModal(${f.id_ticket}, '${(f.cliente || 'Desconocido').replace(/'/g, "\\'")}', '${f.descripcion.replace(/'/g, "\\'").replace(/\n/g, ' ')}')">
+                                👤 Asignar
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+                document.getElementById('cuerpo-tickets').innerHTML = html;
+            } catch (e) {
+                document.getElementById('cuerpo-tickets').innerHTML =
+                    '<tr><td colspan="7" class="texto-vacio" style="color:#E74C3C;">Error de conexión con el servidor.</td></tr>';
+            }
+        }
+ 
+        // =========================================================
+        //  CARGA DE TÉCNICOS (Tab 2)
+        // =========================================================
+        async function cargarTecnicos() {
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas');
+                const tickets = await res.json();
+ 
+                const grid = document.getElementById('grid-tecnicos');
+                let html = '';
+ 
+                tecnicosList.forEach(t => {
+                    const activos = tickets.filter(tk =>
+                        tk.id_tecnico === t.id_empleado &&
+                        tk.estado !== 'Finalizado' && tk.estado !== 'Resuelto'
+                    ).length;
+                    const total = tickets.filter(tk => tk.id_tecnico === t.id_empleado).length;
+                    const color = activos >= 5 ? '#E74C3C' : activos >= 3 ? '#F39C12' : '#27AE60';
+ 
+                    html += `<div class="tecnico-card">
+                        <div class="nombre">${t.nombre_completo}</div>
+                        <div class="username">@${t.username || '—'}</div>
+                        <div style="margin-top:10px;">
+                            <div class="tickets-count" style="color:${color};">${activos}</div>
+                            <div class="tickets-label">Tickets activos</div>
+                        </div>
+                        <div style="font-size:12px; color:#7F8C8D; margin-top:4px;">Total histórico: ${total}</div>
+                    </div>`;
+                });
+ 
+                grid.innerHTML = html || '<div style="color:#7F8C8D;">Sin técnicos registrados.</div>';
+            } catch {
+                document.getElementById('grid-tecnicos').innerHTML =
+                    '<div style="color:#E74C3C;">Error al cargar información de técnicos.</div>';
+            }
+        }
+ 
+        // =========================================================
+        //  HISTORIAL (Tab 3)
+        // =========================================================
+        async function cargarHistorial() {
+            document.getElementById('cuerpo-historial').innerHTML = '<tr><td colspan="7" class="texto-vacio">Cargando...</td></tr>';
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas');
+                const datos = await res.json();
+ 
+                if (datos.length === 0) {
+                    document.getElementById('cuerpo-historial').innerHTML =
+                        '<tr><td colspan="7" class="texto-vacio">Sin registros.</td></tr>';
+                    return;
+                }
+ 
+                let html = '';
+                datos.forEach(f => {
+                    const clasePri = f.prioridad === 'Critica' ? 'pri-critica' :
+                                     f.prioridad === 'Alta'    ? 'pri-alta'    :
+                                     f.prioridad === 'Baja'    ? 'pri-baja'    : 'pri-normal';
+                    const estadoBadge = f.estado === 'Nuevo'       ? 'badge badge-nuevo'   :
+                                        f.estado === 'En revision'  ? 'badge badge-revision' :
+                                        f.estado === 'Finalizado' || f.estado === 'Resuelto' ? 'badge badge-fin' :
+                                        'badge badge-espera';
+                    const fecha = new Date(f.fecha_creacion).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+ 
+                    // Nombre del técnico
+                    const tecnico = tecnicosList.find(t => t.id_empleado === f.id_tecnico);
+                    const nomTecnico = tecnico ? tecnico.nombre_completo : (f.id_tecnico ? `ID-${f.id_tecnico}` : '— Sin asignar —');
+ 
+                    const desc = f.descripcion.length > 55 ? f.descripcion.substring(0, 55) + '…' : f.descripcion;
+ 
+                    html += `<tr>
+                        <td><strong style="color:#D4AF37;">INC-${f.id_ticket}</strong></td>
+                        <td><span class="${clasePri}">${f.prioridad || 'Normal'}</span></td>
+                        <td>${f.cliente || 'Desconocido'}</td>
+                        <td title="${f.descripcion}">${desc}</td>
+                        <td style="color:#A0AEC0;">${nomTecnico}</td>
+                        <td><span class="${estadoBadge}">${f.estado}</span></td>
+                        <td style="color:#7F8C8D; font-size:12px;">${fecha}</td>
+                    </tr>`;
+                });
+                document.getElementById('cuerpo-historial').innerHTML = html;
+            } catch {
+                document.getElementById('cuerpo-historial').innerHTML =
+                    '<tr><td colspan="7" class="texto-vacio" style="color:#E74C3C;">Error de conexión.</td></tr>';
+            }
+        }
+ 
+        // =========================================================
+        //  MODAL
+        // =========================================================
+        async function abrirModal(idTicket, cliente, descripcion) {
+            document.getElementById('modal-id-ticket').value = idTicket;
+            document.getElementById('modal-ticket-info').innerText = `INC-${idTicket}`;
+            document.getElementById('modal-cliente-info').innerText = cliente;
+            document.getElementById('modal-desc-info').innerText = descripcion;
+            // Recargar técnicos en tiempo real antes de mostrar el modal
+            await cargarListaTecnicos();
+            document.getElementById('modal-select-tecnico').value = '';
+            document.getElementById('modal-asignar').classList.add('abierto');
+        }
+ 
+        function cerrarModal() {
+            document.getElementById('modal-asignar').classList.remove('abierto');
+        }
+ 
+        // Cerrar al hacer click fuera
+        document.getElementById('modal-asignar').addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+ 
+        async function confirmarAsignacion() {
+            const idTicket  = document.getElementById('modal-id-ticket').value;
+            const idTecnico = document.getElementById('modal-select-tecnico').value;
+ 
+            if (!idTecnico) {
+                mostrarToast('⚠️ Seleccione un técnico antes de confirmar.', 'error');
+                return;
+            }
+ 
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas/asignar', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_ticket: idTicket, id_tecnico: idTecnico })
+                });
+ 
+                if (res.ok) {
+                    cerrarModal();
+                    mostrarToast('✅ Ticket asignado correctamente.', 'exito');
+                    cargarTickets();
+                } else {
+                    mostrarToast('❌ Error al asignar el ticket. Intente de nuevo.', 'error');
+                }
+            } catch {
+                mostrarToast('❌ Sin conexión con el servidor.', 'error');
+            }
+        }
+ 
+        // =========================================================
+        //  TOAST
+        // =========================================================
+        function mostrarToast(msg, tipo = 'exito') {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.className = `toast ${tipo} show`;
+            setTimeout(() => { t.classList.remove('show'); }, 3000);
+        }
+ 
+        // =========================================================
+        //  CERRAR SESIÓN
+        // =========================================================
+        function cerrarSesion() {
+            localStorage.removeItem('idRol');
+            localStorage.removeItem('nombreEmpleado');
+            localStorage.removeItem('idEmpleado');
+            window.location.href = 'login.html';
+        }
+ 
+        // =========================================================
+        //  INIT — datos en tiempo real con refresco automático
+        // =========================================================
+        window.onload = async function() {
+            await cargarListaTecnicos();
+            cargarTickets();
+ 
+            // Refresco automático cada 30 segundos
+            setInterval(async () => {
+                await cargarListaTecnicos(); // técnicos nuevos se ven al instante
+                const tabActiva = document.querySelector('.tab-content.active');
+                if (tabActiva) {
+                    if (tabActiva.id === 'tab-tickets')   cargarTickets();
+                    if (tabActiva.id === 'tab-tecnicos')  cargarTecnicos();
+                    if (tabActiva.id === 'tab-historial') cargarHistorial();
+                }
+            }, 30000);
+        };
+    </script>
+</body>
+</html>

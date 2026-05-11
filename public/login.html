@@ -17,7 +17,7 @@
             height: 100vh;
             overflow: hidden;
         }
-
+ 
         /* LOGO EN LA ESQUINA SUPERIOR IZQUIERDA */
         .logo-esquina {
             position: absolute;
@@ -26,7 +26,7 @@
             height: 80px;
             width: auto;
         }
-
+ 
         /* TARJETA DE LOGIN */
         .login-card {
             background: #FFFFFF;
@@ -38,7 +38,7 @@
             border-top: 5px solid #D4AF37; /* Detalle en Oro UNAM */
             text-align: center;
         }
-
+ 
         h1 {
             color: #002B5C; /* Azul Marino UNAM */
             font-size: 24px;
@@ -46,19 +46,19 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
+ 
         p {
             color: #7F8C8D;
             font-size: 14px;
             margin-bottom: 30px;
         }
-
+ 
         /* FORMULARIO */
         .form-group {
             text-align: left;
             margin-bottom: 20px;
         }
-
+ 
         label {
             display: block;
             font-size: 13px;
@@ -67,7 +67,7 @@
             margin-bottom: 8px;
             text-transform: uppercase;
         }
-
+ 
         input {
             width: 100%;
             padding: 12px 15px;
@@ -78,11 +78,11 @@
             outline: none;
             transition: border-color 0.2s;
         }
-
+ 
         input:focus {
             border-color: #002B5C;
         }
-
+ 
         /* BOTÓN INSTITUCIONAL */
         .btn-login {
             width: 100%;
@@ -97,11 +97,11 @@
             margin-top: 10px;
             transition: background 0.2s;
         }
-
+ 
         .btn-login:hover {
             background-color: #001A38;
         }
-
+ 
         /* PIE DE PÁGINA */
         .footer-text {
             margin-top: 25px;
@@ -111,54 +111,54 @@
     </style>
 </head>
 <body>
-
+ 
     <img src="logo_pumatel.png" alt="Logo Pumatel" class="logo-esquina">
-
+ 
     <div class="login-card">
         <h1>Intranet Pumatel</h1>
         <p>Centro de Operaciones y Gestión de Red</p>
-
+ 
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
                 <input type="text" id="username" name="username" placeholder="Ej: gmoreno" required>
             </div>
-
+ 
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" id="password" name="password" placeholder="••••••••" required>
             </div>
-
+ 
             <button type="submit" class="btn-login">INGRESAR AL SISTEMA</button>
         </form>
-
+ 
         <div class="footer-text">
             © 2026 Pumatel Telecomunicaciones. <br> Acceso restringido a personal autorizado.
         </div>
     </div>
-
+ 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
+ 
             try {
                 const respuesta = await fetch('http://localhost:3000/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-
+ 
                 const resultado = await respuesta.json();
-
+ 
                 if (respuesta.ok) {
                     // GUARDAR DATOS DE SESIÓN (PERSISTENCIA)
                     localStorage.setItem('idRol', resultado.usuario.id_rol);
                     localStorage.setItem('nombreEmpleado', resultado.usuario.nombre_completo);
                     localStorage.setItem('idEmpleado', resultado.usuario.id_empleado);
-
+ 
                     // REDIRECCIÓN SEGÚN ROL
                     const rol = resultado.usuario.id_rol;
                     
@@ -170,8 +170,10 @@
                             window.location.href = 'ventas.html';
                             break;
                         case 2: // Técnico NOC
-                        case 6: // Jefe NOC
                             window.location.href = 'noc.html';
+                            break;
+                        case 6: // Jefe NOC Admin
+                            window.location.href = 'noc_admin.html';
                             break;
                         case 5: // Almacén
                             window.location.href = 'almacen.html';
