@@ -37,19 +37,37 @@ const obtenerFallas = async (req, res) => {
     }
 };
 
-// 2. OBTENER OA (Módulo de Aprovisionamiento)
+// 2. OBTENER OA (Módulo de Aprovisionamiento) — incluye IPs del cliente
 const obtenerAprovisionamientos = async (req, res) => {
     try {
         const query = `
-            SELECT oa.*, c.nombre_completo AS cliente 
+            SELECT 
+                oa.*,
+                c.nombre_completo  AS cliente,
+                c.email,
+                c.telefono,
+                c.direccion,
+                sc.numero_usuario_unico,
+                sc.plan_contratado,
+                sc.region,
+                sc.ip_wan_red,
+                sc.ip_wan_pe,
+                sc.ip_wan_ce,
+                sc.ip_wan_broadcast,
+                sc.ip_lan_red,
+                sc.linea_telefonica_asignada,
+                inv.equipo         AS equipo_nombre,
+                inv.serie          AS equipo_serie
             FROM ordenes_aprovisionamiento oa
-            LEFT JOIN clientes c ON oa.id_cliente = c.id_cliente
+            LEFT JOIN clientes c            ON oa.id_cliente = c.id_cliente
+            LEFT JOIN servicios_cliente sc  ON sc.id_cliente = oa.id_cliente
+            LEFT JOIN inventario inv        ON inv.id_cliente = oa.id_cliente
             ORDER BY oa.id_oa DESC
         `;
         const [rows] = await db.query(query);
         res.json(rows);
     } catch (error) {
-        res.status(500).json({ mensaje: "Error al obtener órdenes de aprovisionamiento" });
+        res.status(500).json({ mensaje: "Error al obtener ordenes de aprovisionamiento" });
     }
 };
 
@@ -107,17 +125,38 @@ const resolverFalla = async (req, res) => {
     }
 };
 
-// 6. FINALIZAR APROVISIONAMIENTO (OA)
+// 6. FINALIZAR APROVISIONAMIENTO (OA) — guarda enlace troncal y config PE/CE
 const configurarOA = async (req, res) => {
     const { id } = req.params;
+    const { enlace_troncal, ip_troncal_red, ip_troncal_pe, ip_troncal_ce, config_pe, config_ce } = req.body;
+
     try {
-        await db.query("UPDATE ordenes_aprovisionamiento SET estado = 'Operativo' WHERE id_oa = ?", [id]);
-        
-        // Avisamos a la bitácora
-        const { registrarAccion } = require('./bitacoraController'); 
-        await registrarAccion('NOC', `Aprovisionamiento finalizado para la OA-${id}. Equipo PE y CE configurados.`);
-        
-        res.json({ mensaje: '¡Aprovisionamiento exitoso! El servicio del cliente ya está enrutado y en línea.' });
+        await db.query(
+            `UPDATE ordenes_aprovisionamiento 
+             SET estado          = 'Operativo',
+                 enlace_troncal  = ?,
+                 ip_troncal_red  = ?,
+                 ip_troncal_pe   = ?,
+                 ip_troncal_ce   = ?,
+                 config_pe       = ?,
+                 config_ce       = ?
+             WHERE id_oa = ?`,
+            [
+                enlace_troncal  || null,
+                ip_troncal_red  || null,
+                ip_troncal_pe   || null,
+                ip_troncal_ce   || null,
+                config_pe       || null,
+                config_ce       || null,
+                id
+            ]
+        );
+
+        await registrarAccion('NOC',
+            `OA-${id} finalizada. Enlace: ${enlace_troncal || 'N/A'} | PE: ${ip_troncal_pe || 'N/A'} | CE: ${ip_troncal_ce || 'N/A'}`
+        );
+
+        res.json({ mensaje: 'Aprovisionamiento exitoso. Servicio del cliente enrutado y en linea.' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error al finalizar el aprovisionamiento' });

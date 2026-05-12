@@ -3,262 +3,1334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pumatel - Módulo Comercial</title>
+    <title>PumaTel — Módulo Comercial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* ESTILOS GENERALES Y NAVEGACIÓN (Estándar Pumatel) */
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #F4F6F8; color: #333333; font-size: 15px; }
-        nav { background: #002B5C; padding: 12px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #D4AF37; margin-bottom: 30px; }
-        .nav-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-logout { background: transparent; color: #E74C3C; border: 1px solid #E74C3C; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .btn-logout:hover { background: #E74C3C; color: #FFFFFF; }
-        .btn-admin { background: #D4AF37; color: #002B5C; border: none; padding: 8px 16px; font-weight: bold; border-radius: 20px; cursor: pointer; font-size: 13px; }
-        
-        .contenedor { padding: 0 40px 40px 40px; max-width: 1300px; margin: auto; }
-        .header-seccion { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #002B5C; margin: 0; font-size: 26px; }
-        
-        .btn-primario { background-color: #002B5C; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-primario:hover { background-color: #001A38; }
- 
-        /* TABLA */
-        table { width: 100%; border-collapse: collapse; background: #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: 6px; overflow: hidden; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #E0E6ED; font-size: 14px; }
-        th { background: #F8F9FA; color: #002B5C; font-weight: bold; text-transform: uppercase; font-size: 12px; }
- 
-        /* MODAL DE NUEVO CONTRATO */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 43, 92, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-box { background: #FFFFFF; padding: 30px; border-radius: 8px; width: 100%; max-width: 750px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 5px solid #D4AF37; max-height: 90vh; overflow-y: auto;}
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #E0E6ED; padding-bottom: 10px;}
-        .modal-header h2 { color: #002B5C; margin: 0; font-size: 20px; }
-        .btn-cerrar { background: none; border: none; font-size: 24px; color: #7F8C8D; cursor: pointer; }
-        .btn-cerrar:hover { color: #E74C3C; }
-        
-        /* FORMULARIO GRID */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 5px; }
-        .form-group.full-width { grid-column: span 2; }
-        .form-group label { display: block; font-weight: bold; color: #002B5C; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; }
-        input[type="text"], input[type="email"], select { padding: 10px; border: 1px solid #CCC; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        
-        .seccion-titulo { grid-column: span 2; color: #D4AF37; font-weight: bold; font-size: 14px; margin-top: 15px; border-bottom: 1px dashed #CCC; padding-bottom: 5px;}
+        /* ══════════════════════════════════════
+           VARIABLES & BASE
+        ══════════════════════════════════════ */
+        :root {
+            --azul:      #002B5C;
+            --azul-med:  #003d80;
+            --azul-light:#E8F0FB;
+            --oro:       #D4AF37;
+            --oro-light: #FDF6DC;
+            --verde:     #1A7A4A;
+            --verde-bg:  #E6F5EE;
+            --rojo:      #C0392B;
+            --rojo-bg:   #FDECEB;
+            --gris:      #F0F3F7;
+            --gris-borde:#D9E2EC;
+            --texto:     #1A2438;
+            --texto-2:   #4A5568;
+            --blanco:    #FFFFFF;
+            --sombra:    0 2px 12px rgba(0,43,92,.10);
+            --sombra-lg: 0 8px 32px rgba(0,43,92,.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #F0F4FA;
+            color: var(--texto);
+            min-height: 100vh;
+        }
+
+        /* ══════════════════════════════════════
+           NAV
+        ══════════════════════════════════════ */
+        nav {
+            background: var(--azul);
+            border-bottom: 3px solid var(--oro);
+            padding: 0 36px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-shadow: 0 2px 16px rgba(0,0,0,.25);
+        }
+        .nav-izq { display: flex; align-items: center; gap: 18px; }
+        .nav-izq img { height: 44px; filter: brightness(0) invert(1); }
+        .nav-titulo { color: var(--blanco); }
+        .nav-titulo strong { font-size: 17px; font-weight: 700; letter-spacing: .3px; }
+        .nav-titulo span { display: block; font-size: 11px; color: var(--oro); text-transform: uppercase; letter-spacing: 2px; font-weight: 500; margin-top: 1px; }
+        .nav-der { display: flex; align-items: center; gap: 10px; }
+        .btn-nav-admin {
+            background: var(--oro);
+            color: var(--azul);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all .2s;
+        }
+        .btn-nav-admin:hover { background: #c9a227; }
+        .btn-nav-logout {
+            background: transparent;
+            color: #E57373;
+            border: 1.5px solid #E57373;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all .2s;
+        }
+        .btn-nav-logout:hover { background: #E57373; color: var(--blanco); }
+
+        /* ══════════════════════════════════════
+           MAIN LAYOUT
+        ══════════════════════════════════════ */
+        .main { max-width: 1380px; margin: 0 auto; padding: 30px 36px 60px; }
+
+        /* ══════════════════════════════════════
+           KPI CARDS
+        ══════════════════════════════════════ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .kpi-card {
+            background: var(--blanco);
+            border-radius: 12px;
+            padding: 22px 24px;
+            box-shadow: var(--sombra);
+            border-left: 4px solid var(--gris-borde);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            right: -10px; top: -10px;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            opacity: .06;
+        }
+        .kpi-card.azul  { border-left-color: var(--azul);  } .kpi-card.azul::after  { background: var(--azul);  }
+        .kpi-card.oro   { border-left-color: var(--oro);   } .kpi-card.oro::after   { background: var(--oro);   }
+        .kpi-card.verde { border-left-color: var(--verde);  } .kpi-card.verde::after { background: var(--verde);  }
+        .kpi-card.rojo  { border-left-color: var(--rojo);  } .kpi-card.rojo::after  { background: var(--rojo);  }
+        .kpi-numero { font-size: 36px; font-weight: 800; line-height: 1; }
+        .kpi-card.azul  .kpi-numero { color: var(--azul); }
+        .kpi-card.oro   .kpi-numero { color: #a07a10; }
+        .kpi-card.verde .kpi-numero { color: var(--verde); }
+        .kpi-card.rojo  .kpi-numero { color: var(--rojo); }
+        .kpi-label { font-size: 12px; color: var(--texto-2); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; font-weight: 600; }
+        .kpi-icono { font-size: 28px; margin-bottom: 8px; }
+
+        /* ══════════════════════════════════════
+           BARRA SUPERIOR TABLA
+        ══════════════════════════════════════ */
+        .barra-tabla {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .barra-izq { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .seccion-titulo { font-size: 20px; font-weight: 700; color: var(--azul); }
+        .seccion-subtitulo { font-size: 13px; color: var(--texto-2); margin-top: 2px; }
+
+        .inp-buscar {
+            border: 1.5px solid var(--gris-borde);
+            border-radius: 8px;
+            padding: 9px 16px;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            width: 260px;
+            outline: none;
+            background: var(--blanco);
+            transition: border .2s;
+        }
+        .inp-buscar:focus { border-color: var(--azul); }
+        .sel-filtro {
+            border: 1.5px solid var(--gris-borde);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            font-family: 'Outfit', sans-serif;
+            outline: none;
+            background: var(--blanco);
+            color: var(--texto);
+        }
+        .live-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--verde-bg);
+            color: var(--verde);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .live-dot { width: 7px; height: 7px; background: var(--verde); border-radius: 50%; animation: blink 1.6s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+        .btn-nuevo {
+            background: var(--azul);
+            color: var(--blanco);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: background .2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-nuevo:hover { background: var(--azul-med); }
+
+        /* ══════════════════════════════════════
+           TABLA
+        ══════════════════════════════════════ */
+        .tabla-wrap {
+            background: var(--blanco);
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            overflow: hidden;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th {
+            background: var(--azul);
+            color: var(--blanco);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 18px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        thead th:first-child { border-radius: 0; }
+        tbody tr { transition: background .15s; }
+        tbody tr:hover { background: var(--azul-light); }
+        tbody td { padding: 16px 18px; border-bottom: 1px solid var(--gris); color: var(--texto); vertical-align: middle; }
+        tbody tr:last-child td { border-bottom: none; }
+        .txt-vacio { text-align: center; color: var(--texto-2); font-style: italic; padding: 40px 20px; }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            white-space: nowrap;
+        }
+        .badge-activo     { background: var(--verde-bg); color: var(--verde); border: 1px solid #b2dfce; }
+        .badge-suspendido { background: #FEF3CD; color: #856404; border: 1px solid #f0d070; }
+        .badge-cancelado  { background: var(--rojo-bg); color: var(--rojo); border: 1px solid #f5b7b1; }
+        .badge-sin        { background: var(--gris); color: var(--texto-2); border: 1px solid var(--gris-borde); }
+
+        .numero-contrato {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--azul);
+            background: var(--azul-light);
+            padding: 3px 9px;
+            border-radius: 5px;
+        }
+        .plan-chip {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--azul-med);
+        }
+
+        /* BOTONES FILA */
+        .btn-fila {
+            padding: 6px 13px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            transition: all .2s;
+        }
+        .btn-detalle { background: var(--azul-light); color: var(--azul); }
+        .btn-detalle:hover { background: var(--azul); color: var(--blanco); }
+        .btn-suspender { background: #FEF3CD; color: #856404; }
+        .btn-suspender:hover { background: #F39C12; color: var(--blanco); }
+        .btn-cancelar-srv { background: var(--rojo-bg); color: var(--rojo); }
+        .btn-cancelar-srv:hover { background: var(--rojo); color: var(--blanco); }
+        .acciones-fila { display: flex; gap: 5px; flex-wrap: wrap; }
+
+        /* ══════════════════════════════════════
+           MODAL NUEVO CONTRATO
+        ══════════════════════════════════════ */
+        .overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,43,92,.6);
+            display: none; justify-content: center; align-items: flex-start;
+            z-index: 1000;
+            padding: 30px 16px;
+            overflow-y: auto;
+        }
+        .overlay.abierto { display: flex; }
+        .modal {
+            background: var(--blanco);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 760px;
+            box-shadow: var(--sombra-lg);
+            border-top: 5px solid var(--oro);
+            animation: slideUp .22s ease;
+            margin: auto;
+        }
+        @keyframes slideUp { from{ transform: translateY(20px); opacity:0; } to{ transform: translateY(0); opacity:1; } }
+        .modal-head {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid var(--gris);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .modal-head-info h2 { font-size: 20px; color: var(--azul); font-weight: 700; }
+        .modal-head-info p  { font-size: 13px; color: var(--texto-2); margin-top: 3px; }
+        .btn-x { background: none; border: none; font-size: 24px; color: var(--texto-2); cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
+        .btn-x:hover { background: var(--gris); color: var(--rojo); }
+        .modal-body { padding: 24px 28px; }
+        .modal-foot { padding: 18px 28px; border-top: 1px solid var(--gris); display: flex; justify-content: flex-end; gap: 10px; }
+
+        /* SECCIONES FORMULARIO */
+        .form-seccion {
+            margin-bottom: 22px;
+        }
+        .form-seccion-titulo {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--oro);
+            border-bottom: 1px solid var(--gris-borde);
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { }
+        .form-group.full { grid-column: span 2; }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--azul);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 13px;
+            border: 1.5px solid var(--gris-borde);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            color: var(--texto);
+            outline: none;
+            transition: border .2s, box-shadow .2s;
+            background: var(--blanco);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(0,43,92,.08);
+        }
+        .form-hint { font-size: 11px; color: var(--texto-2); margin-top: 4px; }
+
+        /* PLANES */
+        .planes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .plan-radio { display: none; }
+        .plan-card {
+            border: 2px solid var(--gris-borde);
+            border-radius: 10px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+        }
+        .plan-card:hover { border-color: var(--azul); background: var(--azul-light); }
+        .plan-radio:checked + .plan-card {
+            border-color: var(--azul);
+            background: var(--azul-light);
+            box-shadow: 0 0 0 3px rgba(0,43,92,.10);
+        }
+        .plan-radio:checked + .plan-card .plan-check { display: block; }
+        .plan-check { display: none; position: absolute; top: 10px; right: 12px; color: var(--azul); font-size: 16px; font-weight: 800; }
+        .plan-nombre { font-weight: 700; color: var(--azul); font-size: 14px; }
+        .plan-velocidad { font-size: 20px; font-weight: 800; color: var(--azul); margin: 3px 0; }
+        .plan-desc { font-size: 11px; color: var(--texto-2); }
+        .plan-precio { font-size: 13px; font-weight: 700; color: var(--verde); margin-top: 5px; }
+
+        /* SERIES EQUIPO */
+        .serie-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .serie-row input { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+        .btn-add-serie { background: var(--verde); color: var(--blanco); border: none; border-radius: 6px; padding: 10px 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
+        .btn-rm-serie  { background: var(--rojo-bg); color: var(--rojo); border: 1px solid var(--rojo); border-radius: 6px; padding: 10px 12px; font-size: 16px; cursor: pointer; }
+
+        /* BTNS MODAL */
+        .btn-cancelar-modal {
+            background: var(--gris);
+            color: var(--texto-2);
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+        .btn-cancelar-modal:hover { background: var(--gris-borde); }
+        .btn-procesar {
+            background: var(--azul);
+            color: var(--blanco);
+            border: none;
+            padding: 11px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: background .2s;
+        }
+        .btn-procesar:hover { background: var(--azul-med); }
+        .btn-procesar:disabled { background: #aaa; cursor: not-allowed; }
+
+        /* Bloque IP sugerida */
+        .ip-bloque {
+            background: #EAF3DE;
+            border: 1.5px solid #639922;
+            border-radius: 10px;
+            padding: 16px 20px;
+            grid-column: span 2;
+            margin-top: 4px;
+        }
+        .ip-bloque.cargando { background: #F0F4FA; border-color: var(--gris-borde); }
+        .ip-bloque.error    { background: var(--rojo-bg); border-color: var(--rojo); }
+        .ip-bloque-titulo {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: #3B6D11; margin-bottom: 10px;
+        }
+        .ip-bloque.error .ip-bloque-titulo { color: var(--rojo); }
+        .ip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .ip-campo label {
+            display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .5px; color: #3B6D11; margin-bottom: 3px;
+        }
+        .ip-campo code {
+            display: block; font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; font-weight: 600; color: var(--azul);
+            background: var(--blanco); border: 1px solid var(--gris-borde);
+            border-radius: 6px; padding: 6px 10px;
+        }
+        .cap-bar { margin-top: 10px; }
+        .cap-label { font-size: 11px; color: #3B6D11; margin-bottom: 4px; }
+        .cap-track { background: var(--gris-borde); border-radius: 20px; height: 6px; overflow: hidden; }
+        .cap-fill  { background: #639922; height: 100%; border-radius: 20px; transition: width .4s; }
+        .cap-fill.warn { background: #F39C12; }
+        .cap-fill.full { background: var(--rojo); }
+
+        /* ══════════════════════════════════════
+           MODAL DETALLE CLIENTE
+        ══════════════════════════════════════ */
+        .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .detalle-bloque {
+            background: var(--gris);
+            border-radius: 10px;
+            padding: 18px;
+        }
+        .detalle-bloque.full { grid-column: span 2; }
+        .detalle-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-2); font-weight: 700; margin-bottom: 4px; }
+        .detalle-valor { font-size: 15px; font-weight: 600; color: var(--texto); }
+        .detalle-valor.mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--azul); }
+
+        .equipo-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--azul-light);
+            color: var(--azul);
+            border: 1px solid #c2d5ee;
+            border-radius: 6px;
+            padding: 5px 11px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .equipo-tag code { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+        /* ══════════════════════════════════════
+           TOAST
+        ══════════════════════════════════════ */
+        .toast {
+            position: fixed; bottom: 28px; right: 28px;
+            background: var(--azul);
+            color: var(--blanco);
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: var(--sombra-lg);
+            z-index: 9999;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all .3s ease;
+            border-left: 4px solid var(--oro);
+            max-width: 340px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.ok  { border-left-color: var(--verde); }
+        .toast.err { border-left-color: var(--rojo); }
+
+        @media (max-width: 900px) {
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .main { padding: 20px 18px 40px; }
+            .form-grid, .planes-grid, .detalle-grid { grid-template-columns: 1fr; }
+            .form-group.full, .detalle-bloque.full { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
- 
-    <nav>
-        <div style="display: flex; align-items: center; gap: 20px; color: #FFFFFF; font-weight: bold; letter-spacing: 1px;">
-            <img src="logo_pumatel.png" alt="Logo Pumatel" style="height: 65px; width: auto; filter: brightness(0) invert(1);">
-            <div style="font-size: 20px;">PUMATEL INTRANET | MÓDULO COMERCIAL</div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav>
+    <div class="nav-izq">
+        <img src="logo_pumatel.png" alt="PumaTel">
+        <div class="nav-titulo">
+            <strong>PUMATEL</strong>
+            <span>Módulo Comercial — Gestión de Contratos</span>
         </div>
-        <div class="nav-buttons">
-            <button class="btn-admin" id="btn-volver-admin" style="display:none;" onclick="window.location.href='admin.html'">⬅ PANEL ADMIN</button>
-            <button class="btn-logout" onclick="cerrarSesion()">CERRAR SESIÓN</button>
+    </div>
+    <div class="nav-der">
+        <button class="btn-nav-admin" id="btn-admin" style="display:none" onclick="location.href='admin.html'">⬅ Panel Admin</button>
+        <button class="btn-nav-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+        <div class="kpi-card azul">
+            <div class="kpi-icono">🏢</div>
+            <div class="kpi-numero" id="kpi-total">—</div>
+            <div class="kpi-label">Clientes Totales</div>
         </div>
-    </nav>
- 
-    <div class="contenedor">
-        <div class="header-seccion">
-            <h1>Cartera de Clientes Activos</h1>
-            <button class="btn-primario" onclick="abrirModal()">+ Registrar Nuevo Contrato</button>
+        <div class="kpi-card verde">
+            <div class="kpi-icono">✅</div>
+            <div class="kpi-numero" id="kpi-activos">—</div>
+            <div class="kpi-label">Servicios Activos</div>
         </div>
- 
+        <div class="kpi-card oro">
+            <div class="kpi-icono">⏸</div>
+            <div class="kpi-numero" id="kpi-suspendidos">—</div>
+            <div class="kpi-label">Suspendidos</div>
+        </div>
+        <div class="kpi-card rojo">
+            <div class="kpi-icono">📋</div>
+            <div class="kpi-numero" id="kpi-sin-contrato">—</div>
+            <div class="kpi-label">Sin Contrato</div>
+        </div>
+    </div>
+
+    <!-- BARRA TABLA -->
+    <div class="barra-tabla">
+        <div>
+            <div class="seccion-titulo">Cartera de Clientes</div>
+            <div class="seccion-subtitulo">Contratos de Conectividad Corporativa PumaTel</div>
+        </div>
+        <div class="barra-izq">
+            <div class="live-pill"><span class="live-dot"></span> Tiempo real</div>
+            <input class="inp-buscar" type="text" id="buscador" placeholder="🔍 Buscar cliente o contrato..." oninput="filtrar()">
+            <select class="sel-filtro" id="filtro-estado" onchange="filtrar()">
+                <option value="">Todos los estados</option>
+                <option value="Activo">Activo</option>
+                <option value="Suspendido">Suspendido</option>
+                <option value="Cancelado">Cancelado</option>
+                <option value="sin">Sin contrato</option>
+            </select>
+            <button class="btn-nuevo" onclick="abrirModalNuevo()">
+                <span style="font-size:16px;">+</span> Nuevo Contrato
+            </button>
+        </div>
+    </div>
+
+    <!-- TABLA -->
+    <div class="tabla-wrap">
         <table>
             <thead>
                 <tr>
-                    <th>ID Cliente</th>
-                    <th>Nombre Completo</th>
-                    <th>Correo Electrónico</th>
-                    <th>Teléfono</th>
-                    <th>Dirección de Instalación</th>
+                    <th>Cliente</th>
+                    <th>Contacto</th>
+                    <th>N° Contrato</th>
+                    <th>Plan Contratado</th>
+                    <th>Equipo Asignado</th>
                     <th>Estado</th>
+                    <th>Alta</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="cuerpo-tabla">
-                <tr><td colspan="6" style="text-align: center; padding: 20px;">Cargando base de datos de clientes...</td></tr>
+                <tr><td colspan="8" class="txt-vacio">Cargando cartera de clientes...</td></tr>
             </tbody>
         </table>
     </div>
- 
-    <div class="modal-overlay" id="modal-venta">
-        <div class="modal-box">
-            <div class="modal-header">
+</div>
+
+<!-- ═══════════════ MODAL NUEVO CONTRATO ═══════════════ -->
+<div class="overlay" id="ov-nuevo">
+    <div class="modal">
+        <div class="modal-head">
+            <div class="modal-head-info">
                 <h2>Generar Nuevo Contrato de Servicio</h2>
-                <button class="btn-cerrar" onclick="cerrarModal()">×</button>
+                <p>Registra al cliente, el plan de conectividad y el equipo CPE a instalar.</p>
             </div>
- 
-            <form id="form-venta">
-                <div class="form-grid">
-                    
-                    <div class="seccion-titulo">1. DATOS PERSONALES DEL TITULAR</div>
-                    
-                    <div class="form-group full-width">
-                        <label>Nombre Completo</label>
-                        <input type="text" id="nombre_completo" required placeholder="Nombre legal para el contrato">
-                    </div>
- 
-                    <div class="form-group">
-                        <label>Correo Electrónico</label>
-                        <input type="email" id="email" required placeholder="cliente@ejemplo.com">
-                    </div>
- 
-                    <div class="form-group">
-                        <label>Teléfono de Contacto</label>
-                        <input type="text" id="telefono" required placeholder="A 10 dígitos">
-                    </div>
- 
-                    <div class="form-group full-width">
-                        <label>Dirección de Instalación</label>
-                        <input type="text" id="direccion" required placeholder="Calle, Número, Colonia, C.P.">
-                    </div>
- 
-                    <div class="seccion-titulo">2. DETALLES DEL SERVICIO A CONTRATAR</div>
- 
-                    <div class="form-group">
-                        <label>Plan Contratado</label>
-                        <select id="plan_contratado" required>
-                            <option value="">Seleccione un plan...</option>
-                            <option value="Basico 50 Mbps">Plan Básico - 50 Mbps</option>
-                            <option value="Familiar 100 Mbps">Plan Familiar - 100 Mbps</option>
-                            <option value="Gamer 300 Mbps">Plan Gamer - 300 Mbps</option>
-                            <option value="Empresarial 1 Gbps">Plan Empresarial - 1 Gbps</option>
-                        </select>
-                    </div>
- 
-                    <div class="form-group">
-                        <label>Línea Telefónica Asignada</label>
-                        <input type="text" id="linea_telefonica" placeholder="Ej. 55-XXXX-XXXX">
-                    </div>
- 
-                    <div class="form-group full-width" id="contenedor-series">
-                        <label>Número(s) de Serie (Equipos en Almacén)</label>
-                        <div class="grupo-serie" style="display: flex; gap: 10px; margin-bottom: 8px;">
-                            <input type="text" class="input-serie" required placeholder="Ej. SN-PUMA-001" style="flex: 1;">
-                            <button type="button" class="btn-primario" onclick="agregarSerie()" style="background-color: #27AE60; padding: 10px 15px;">+</button>
+            <button class="btn-x" onclick="cerrarModalNuevo()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="form-contrato">
+
+                <!-- SECCIÓN 1: DATOS CLIENTE -->
+                <div class="form-seccion">
+                    <div class="form-seccion-titulo">1 — Datos del Titular del Contrato</div>
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label>Nombre Completo / Razón Social *</label>
+                            <input type="text" id="f-nombre" required placeholder="Nombre legal para el contrato">
+                        </div>
+                        <div class="form-group">
+                            <label>Correo Electrónico *</label>
+                            <input type="email" id="f-email" required placeholder="contacto@empresa.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono de Contacto *</label>
+                            <input type="text" id="f-telefono" required placeholder="10 dígitos">
+                        </div>
+                        <div class="form-group full">
+                            <label>Dirección de Instalación del Enlace *</label>
+                            <input type="text" id="f-direccion" required placeholder="Calle, Núm, Colonia, C.P., Ciudad">
                         </div>
                     </div>
- 
                 </div>
- 
-                <div style="text-align: right; margin-top: 25px;">
-                    <button type="button" class="btn-logout" onclick="cerrarModal()" style="margin-right: 10px;">Cancelar</button>
-                    <button type="submit" class="btn-primario">Procesar Alta y Asignar Equipo(s)</button>
+
+                <!-- SECCIÓN 2: PLAN -->
+                <div class="form-seccion">
+                    <div class="form-seccion-titulo">2 — Plan de Conectividad Corporativa</div>
+                    <div class="planes-grid">
+                        <label>
+                            <input type="radio" name="plan" class="plan-radio" value="Enlace Dedicado 10 Mbps" required>
+                            <div class="plan-card">
+                                <div class="plan-check">✓</div>
+                                <div class="plan-nombre">Enlace Dedicado</div>
+                                <div class="plan-velocidad">10 Mbps</div>
+                                <div class="plan-desc">Punto a Punto — Gobierno / PyME</div>
+                                <div class="plan-precio">Desde $3,500 MXN/mes</div>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" name="plan" class="plan-radio" value="Enlace Dedicado 50 Mbps">
+                            <div class="plan-card">
+                                <div class="plan-check">✓</div>
+                                <div class="plan-nombre">Enlace Dedicado</div>
+                                <div class="plan-velocidad">50 Mbps</div>
+                                <div class="plan-desc">Alta disponibilidad — SLA 99.9%</div>
+                                <div class="plan-precio">Desde $7,200 MXN/mes</div>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" name="plan" class="plan-radio" value="Enlace Dedicado 100 Mbps">
+                            <div class="plan-card">
+                                <div class="plan-check">✓</div>
+                                <div class="plan-nombre">Enlace Dedicado</div>
+                                <div class="plan-velocidad">100 Mbps</div>
+                                <div class="plan-desc">Industrial / Corporativo — QoS incluido</div>
+                                <div class="plan-precio">Desde $13,500 MXN/mes</div>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" name="plan" class="plan-radio" value="Enlace Dedicado 1 Gbps">
+                            <div class="plan-card">
+                                <div class="plan-check">✓</div>
+                                <div class="plan-nombre">Enlace Dedicado</div>
+                                <div class="plan-velocidad">1 Gbps</div>
+                                <div class="plan-desc">Data Center / Gran Corporativo</div>
+                                <div class="plan-precio">Desde $45,000 MXN/mes</div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
+
+                <!-- SECCIÓN 2b: REGIÓN Y DIRECCIONAMIENTO -->
+                <div class="form-seccion" style="margin-top:4px;">
+                    <div class="form-seccion-titulo">3 — Región y Direccionamiento IP</div>
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label>Región de Servicio *</label>
+                            <select id="f-region" required onchange="consultarSiguienteIP()">
+                                <option value="">— Selecciona la región del cliente —</option>
+                                <option value="DF">DF — Ciudad de México (148.246.x.x)</option>
+                                <option value="GDL">GDL — Guadalajara (148.247.x.x)</option>
+                                <option value="MTY">MTY — Monterrey (148.248.x.x)</option>
+                            </select>
+                        </div>
+                        <!-- Bloque de IPs sugeridas — se llena con JS -->
+                        <div id="ip-sugerida-wrap" class="form-group full" style="display:none;">
+                            <label>Direccionamiento asignado automáticamente</label>
+                            <div id="ip-bloque" class="ip-bloque cargando">
+                                <div class="ip-bloque-titulo">⏳ Consultando disponibilidad...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: TÉCNICO -->
+                <!-- SECCIÓN 3: TÉCNICO -->
+                <div class="form-seccion">
+                    <div class="form-seccion-titulo">3 — Detalles de Instalación</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Línea Telefónica Asignada</label>
+                            <input type="text" id="f-linea" placeholder="55-XXXX-XXXX (opcional)">
+                            <div class="form-hint">Número de voz sobre IP si aplica al contrato.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Empresa Instaladora</label>
+                            <input type="text" id="f-instaladora" value="Cuadrilla PumaTel" placeholder="Cuadrilla PumaTel">
+                        </div>
+                        <div class="form-group full">
+                            <label>Número(s) de Serie — CPE / ONT (Equipo en almacén) *</label>
+                            <div id="series-wrap">
+                                <div class="serie-row">
+                                    <input type="text" class="inp-serie" required placeholder="Ej. SN-PUMA-001" style="font-family:'JetBrains Mono',monospace;font-size:13px;">
+                                    <button type="button" class="btn-add-serie" onclick="addSerie()">+</button>
+                                </div>
+                            </div>
+                            <div class="form-hint">Ingresa el número de serie exacto como aparece en el almacén. Se puede agregar más de un equipo.</div>
+                        </div>
+                    </div>
+                </div>
+
             </form>
         </div>
+        <div class="modal-foot">
+            <button class="btn-cancelar-modal" onclick="cerrarModalNuevo()">Cancelar</button>
+            <button class="btn-procesar" id="btn-procesar" onclick="procesarContrato()">🚀 Procesar Alta y Enviar OA al NOC</button>
+        </div>
     </div>
- 
-    <script>
-        window.onload = function() {
-            cargarClientes();
-            if (parseInt(localStorage.getItem('idRol') || '0') === 3) {
-                document.getElementById('btn-volver-admin').style.display = 'inline-block';
-            }
-        };
- 
-        function cerrarSesion() {
-            localStorage.removeItem('idRol');
-            localStorage.removeItem('nombreEmpleado');
-            localStorage.removeItem('idEmpleado');
-            window.location.href = 'login.html';
+</div>
+
+<!-- ═══════════════ MODAL DETALLE CLIENTE ═══════════════ -->
+<div class="overlay" id="ov-detalle">
+    <div class="modal">
+        <div class="modal-head">
+            <div class="modal-head-info">
+                <h2 id="det-nombre">Detalle del Cliente</h2>
+                <p id="det-numero" style="font-family:'JetBrains Mono',monospace;color:var(--azul);font-weight:600;">—</p>
+            </div>
+            <button class="btn-x" onclick="cerrarDetalle()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="detalle-grid" id="detalle-contenido">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn-cancelar-modal" onclick="cerrarDetalle()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ══════════════════════════════════════════
+    //  ESTADO
+    // ══════════════════════════════════════════
+    let clientesData = [];
+
+    // ══════════════════════════════════════════
+    //  INIT
+    // ══════════════════════════════════════════
+    window.onload = function() {
+        if (parseInt(localStorage.getItem('idRol') || '0') === 3) {
+            document.getElementById('btn-admin').style.display = 'inline-block';
         }
- 
-        // 1. CARGAR CLIENTES DESDE LA BASE DE DATOS
-        async function cargarClientes() {
-            try {
-                const res = await fetch('http://localhost:3000/api/usuarios/clientes');
-                const datos = await res.json();
-                
-                let html = '';
-                datos.forEach(cli => {
-                    html += `
-                        <tr>
-                            <td><strong>CL-${cli.id_cliente}</strong></td>
-                            <td>${cli.nombre_completo}</td>
-                            <td>${cli.email}</td>
-                            <td>${cli.telefono}</td>
-                            <td>${cli.direccion}</td>
-                            <td><span style="background:#27AE60; color:white; padding:3px 8px; border-radius:10px; font-size:11px; font-weight:bold;">ACTIVO</span></td>
-                        </tr>
-                    `;
-                });
-                document.getElementById('cuerpo-tabla').innerHTML = html;
-            } catch (error) {
-                document.getElementById('cuerpo-tabla').innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión con la base de datos.</td></tr>';
-            }
+        cargarClientes();
+        setInterval(cargarClientes, 25000); // tiempo real cada 25s
+    };
+
+    function cerrarSesion() {
+        ['idRol','nombreEmpleado','idEmpleado'].forEach(k => localStorage.removeItem(k));
+        location.href = 'login.html';
+    }
+
+    // ══════════════════════════════════════════
+    //  CARGAR Y RENDERIZAR
+    // ══════════════════════════════════════════
+    async function cargarClientes() {
+        try {
+            const res = await fetch('http://localhost:3000/api/usuarios/clientes');
+            if (!res.ok) throw new Error();
+            clientesData = await res.json();
+            renderTabla(clientesData);
+            actualizarKPIs(clientesData);
+        } catch {
+            document.getElementById('cuerpo-tabla').innerHTML =
+                '<tr><td colspan="8" class="txt-vacio" style="color:var(--rojo)">Error de conexión con el servidor.</td></tr>';
         }
- 
-        // 2. CONTROL DEL MODAL
-        function abrirModal() {
-            document.getElementById('form-venta').reset();
-            
-            // Limpiamos los campos extra de serie por si se abrieron antes
-            const contenedor = document.getElementById('contenedor-series');
-            contenedor.innerHTML = `
-                <label>Número(s) de Serie (Equipos en Almacén)</label>
-                <div class="grupo-serie" style="display: flex; gap: 10px; margin-bottom: 8px;">
-                    <input type="text" class="input-serie" required placeholder="Ej. SN-PUMA-001" style="flex: 1;">
-                    <button type="button" class="btn-primario" onclick="agregarSerie()" style="background-color: #27AE60; padding: 10px 15px;">+</button>
-                </div>
-            `;
-            
-            document.getElementById('modal-venta').style.display = 'flex';
-        }
- 
-        function cerrarModal() {
-            document.getElementById('modal-venta').style.display = 'none';
-        }
- 
-        // FUNCIÓN PARA AGREGAR MÁS CAMPOS DE NÚMEROS DE SERIE
-        function agregarSerie() {
-            const contenedor = document.getElementById('contenedor-series');
-            const div = document.createElement('div');
-            div.className = 'grupo-serie';
-            div.style = 'display: flex; gap: 10px; margin-bottom: 8px;';
-            div.innerHTML = `
-                <input type="text" class="input-serie" required placeholder="Ej. SN-PUMA-EXT-02" style="flex: 1;">
-                <button type="button" class="btn-logout" onclick="this.parentElement.remove()" style="padding: 10px 15px;">-</button>
-            `;
-            contenedor.appendChild(div);
-        }
- 
-        // 3. ENVIAR LA TRANSACCIÓN AL BACKEND
-        document.getElementById('form-venta').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            
-            // Recopilamos TODOS los números de serie en un Array
-            const inputsSerie = document.querySelectorAll('.input-serie');
-            const arraySeries = Array.from(inputsSerie).map(input => input.value.trim()).filter(val => val !== '');
-            
-            const payload = {
-                nombre_completo: document.getElementById('nombre_completo').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                direccion: document.getElementById('direccion').value,
-                plan_contratado: document.getElementById('plan_contratado').value,
-                linea_telefonica: document.getElementById('linea_telefonica').value,
-                numero_serie: arraySeries // <- Aquí mandamos la lista de equipos
-            };
- 
-            try {
-                const res = await fetch('http://localhost:3000/api/usuarios/registro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
- 
-                const respuestaBD = await res.json();
- 
-                if(res.ok) {
-                    alert('¡Venta Exitosa!\n\nSe ha generado el contrato: ' + respuestaBD.numero_usuario);
-                    cerrarModal();
-                    cargarClientes(); 
-                } else {
-                    alert('Error en la transacción:\n' + respuestaBD.mensaje);
-                }
-            } catch (error) {
-                alert('No se pudo conectar con el servidor.');
-            }
+    }
+
+    function actualizarKPIs(datos) {
+        const total      = new Set(datos.map(d => d.id_cliente)).size;
+        const activos    = datos.filter(d => d.estatus_servicio === 'Activo').length;
+        const suspendidos= datos.filter(d => d.estatus_servicio === 'Suspendido').length;
+        const sinContrato= datos.filter(d => !d.id_servicio).length;
+        document.getElementById('kpi-total').innerText      = total;
+        document.getElementById('kpi-activos').innerText    = activos;
+        document.getElementById('kpi-suspendidos').innerText = suspendidos;
+        document.getElementById('kpi-sin-contrato').innerText = sinContrato;
+    }
+
+    function renderTabla(datos) {
+        const busq = document.getElementById('buscador').value.toLowerCase();
+        const est  = document.getElementById('filtro-estado').value;
+
+        const filtrados = datos.filter(d => {
+            const matchBusq = !busq ||
+                (d.nombre_completo || '').toLowerCase().includes(busq) ||
+                (d.numero_usuario_unico || '').toLowerCase().includes(busq) ||
+                (d.email || '').toLowerCase().includes(busq);
+            const matchEst = !est ||
+                (est === 'sin' ? !d.id_servicio : d.estatus_servicio === est);
+            return matchBusq && matchEst;
         });
-    </script>
+
+        if (filtrados.length === 0) {
+            document.getElementById('cuerpo-tabla').innerHTML =
+                '<tr><td colspan="8" class="txt-vacio">Sin resultados para la búsqueda.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        filtrados.forEach(c => {
+            const estadoBadge = !c.id_servicio
+                ? '<span class="badge badge-sin">Sin contrato</span>'
+                : c.estatus_servicio === 'Activo'
+                    ? '<span class="badge badge-activo">Activo</span>'
+                    : c.estatus_servicio === 'Suspendido'
+                        ? '<span class="badge badge-suspendido">Suspendido</span>'
+                        : '<span class="badge badge-cancelado">Cancelado</span>';
+
+            const contrato = c.numero_usuario_unico
+                ? `<span class="numero-contrato">${c.numero_usuario_unico}</span>`
+                : '<span style="color:var(--texto-2);font-size:12px;">—</span>';
+
+            const plan = c.plan_contratado
+                ? `<span class="plan-chip">${c.plan_contratado}</span>`
+                : '<span style="color:var(--texto-2);font-size:12px;">—</span>';
+
+            const equipo = c.equipo_nombre
+                ? `<div style="font-size:12px;font-weight:600;">${c.equipo_nombre}<br>
+                   <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--azul);">${c.equipo_serie}</code></div>`
+                : '<span style="color:var(--texto-2);font-size:12px;">—</span>';
+
+            const fecha = c.fecha_activacion
+                ? new Date(c.fecha_activacion).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'})
+                : '—';
+
+            const clienteJson = JSON.stringify(c).replace(/'/g,"&#39;");
+
+            html += `<tr>
+                <td>
+                    <div style="font-weight:700;color:var(--azul);">${c.nombre_completo}</div>
+                    <div style="font-size:11px;color:var(--texto-2);">ID-${c.id_cliente}</div>
+                </td>
+                <td>
+                    <div style="font-size:13px;">${c.email || '—'}</div>
+                    <div style="font-size:12px;color:var(--texto-2);">${c.telefono || '—'}</div>
+                </td>
+                <td>${contrato}</td>
+                <td>${plan}</td>
+                <td>${equipo}</td>
+                <td>${estadoBadge}</td>
+                <td style="font-size:12px;color:var(--texto-2);">${fecha}</td>
+                <td>
+                    <div class="acciones-fila">
+                        <button class="btn-fila btn-detalle" onclick='verDetalle(${clienteJson})'>Ver</button>
+                        ${c.id_servicio ? `
+                        <button class="btn-fila btn-suspender" onclick='abrirModalEditar(${clienteJson})'>✏️ Editar</button>
+                        <button class="btn-fila btn-cancelar-srv" onclick='abrirModalEstatus(${clienteJson})'>⚡ Estatus</button>
+                        ` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        });
+        document.getElementById('cuerpo-tabla').innerHTML = html;
+    }
+
+    function filtrar() { renderTabla(clientesData); }
+
+    // ══════════════════════════════════════════
+    //  MODAL NUEVO CONTRATO
+    // ══════════════════════════════════════════
+    function abrirModalNuevo() {
+        document.getElementById('form-contrato').reset();
+        document.getElementById('series-wrap').innerHTML = `
+            <div class="serie-row">
+                <input type="text" class="inp-serie" required placeholder="Ej. SN-PUMA-001" style="font-family:'JetBrains Mono',monospace;font-size:13px;">
+                <button type="button" class="btn-add-serie" onclick="addSerie()">+</button>
+            </div>`;
+        // Limpiar bloque de IPs
+        document.getElementById('ip-sugerida-wrap').style.display = 'none';
+        document.getElementById('ip-bloque').removeAttribute('data-wan');
+        document.getElementById('ov-nuevo').classList.add('abierto');
+    }
+
+    // Consulta al backend la siguiente IP libre para la región seleccionada
+    async function consultarSiguienteIP() {
+        const region = document.getElementById('f-region').value;
+        const wrap   = document.getElementById('ip-sugerida-wrap');
+        const bloque = document.getElementById('ip-bloque');
+
+        if (!region) { wrap.style.display = 'none'; return; }
+
+        wrap.style.display = 'block';
+        bloque.className = 'ip-bloque cargando';
+        bloque.innerHTML = '<div class="ip-bloque-titulo">⏳ Consultando disponibilidad...</div>';
+        bloque.removeAttribute('data-wan');
+
+        try {
+            const res  = await fetch(`http://localhost:3000/api/direccionamiento/siguiente-ip?region=${region}`);
+            const data = await res.json();
+
+            if (!data.wan || !data.lan) {
+                bloque.className = 'ip-bloque error';
+                bloque.innerHTML = '<div class="ip-bloque-titulo">❌ Sin IPs disponibles para esta región.</div>';
+                return;
+            }
+
+            // Guardar en dataset para que procesarContrato las tome
+            bloque.dataset.wan       = data.wan.red;
+            bloque.dataset.pe        = data.wan.pe;
+            bloque.dataset.ce        = data.wan.ce;
+            bloque.dataset.broadcast = data.wan.broadcast;
+            bloque.dataset.lan       = data.lan;
+
+            // Calcular % de ocupación WAN
+            const pct  = Math.round((data.capacidad.wan_usadas / data.capacidad.wan_total) * 100);
+            const cls  = pct >= 90 ? 'full' : pct >= 70 ? 'warn' : '';
+
+            bloque.className = 'ip-bloque';
+            bloque.innerHTML = `
+                <div class="ip-bloque-titulo">✅ Siguiente dirección disponible — ${region}</div>
+                <div class="ip-grid">
+                    <div class="ip-campo">
+                        <label>Red WAN /30</label>
+                        <code>${data.wan.red}</code>
+                    </div>
+                    <div class="ip-campo">
+                        <label>IP PE (PumaTel)</label>
+                        <code>${data.wan.pe}</code>
+                    </div>
+                    <div class="ip-campo">
+                        <label>IP CE (Cliente)</label>
+                        <code>${data.wan.ce}</code>
+                    </div>
+                    <div class="ip-campo">
+                        <label>Broadcast WAN</label>
+                        <code>${data.wan.broadcast}</code>
+                    </div>
+                    <div class="ip-campo" style="grid-column:span 2;">
+                        <label>Red LAN /28 (cliente)</label>
+                        <code>${data.lan}</code>
+                    </div>
+                </div>
+                <div class="cap-bar">
+                    <div class="cap-label">Capacidad ${region}: ${data.capacidad.wan_usadas} / ${data.capacidad.wan_total} clientes usados</div>
+                    <div class="cap-track"><div class="cap-fill ${cls}" style="width:${pct}%"></div></div>
+                </div>`;
+        } catch {
+            bloque.className = 'ip-bloque error';
+            bloque.innerHTML = '<div class="ip-bloque-titulo">❌ Error de conexión con el servidor.</div>';
+        }
+    }
+    function cerrarModalNuevo() { document.getElementById('ov-nuevo').classList.remove('abierto'); }
+
+    function addSerie() {
+        const wrap = document.getElementById('series-wrap');
+        const div = document.createElement('div');
+        div.className = 'serie-row';
+        div.innerHTML = `
+            <input type="text" class="inp-serie" required placeholder="Ej. SN-PUMA-EXT-02" style="font-family:'JetBrains Mono',monospace;font-size:13px;flex:1;">
+            <button type="button" class="btn-rm-serie" onclick="this.parentElement.remove()">−</button>`;
+        wrap.appendChild(div);
+    }
+
+    async function procesarContrato() {
+        const planSeleccionado = document.querySelector('input[name="plan"]:checked');
+        if (!planSeleccionado) { toast('⚠️ Selecciona un plan de conectividad.', 'err'); return; }
+
+        const series = Array.from(document.querySelectorAll('.inp-serie'))
+            .map(i => i.value.trim()).filter(Boolean);
+        if (series.length === 0) { toast('⚠️ Ingresa al menos un número de serie del equipo.', 'err'); return; }
+
+        const nombre   = document.getElementById('f-nombre').value.trim();
+        const email    = document.getElementById('f-email').value.trim();
+        const telefono = document.getElementById('f-telefono').value.trim();
+        const dir      = document.getElementById('f-direccion').value.trim();
+        if (!nombre || !email || !telefono || !dir) { toast('⚠️ Completa todos los campos obligatorios.', 'err'); return; }
+
+        const btn = document.getElementById('btn-procesar');
+        btn.disabled = true;
+        btn.innerText = 'Procesando...';
+
+        // Validar región
+        const region = document.getElementById('f-region').value;
+        if (!region) { toast('⚠️ Selecciona la región del cliente.', 'err'); return; }
+
+        // Leer IPs calculadas (guardadas en dataset del bloque)
+        const ipBloque = document.getElementById('ip-bloque');
+        if (!ipBloque.dataset.wan) {
+            toast('⚠️ Espera a que se calcule el direccionamiento IP.', 'err'); return;
+        }
+
+        const payload = {
+            nombre_completo: nombre,
+            email, telefono, direccion: dir,
+            plan_contratado: planSeleccionado.value,
+            linea_telefonica: document.getElementById('f-linea').value.trim(),
+            numero_serie: series,
+            // Campos de direccionamiento
+            region,
+            ip_wan_red:       ipBloque.dataset.wan,
+            ip_wan_pe:        ipBloque.dataset.pe,
+            ip_wan_ce:        ipBloque.dataset.ce,
+            ip_wan_broadcast: ipBloque.dataset.broadcast,
+            ip_lan_red:       ipBloque.dataset.lan,
+        };
+
+        try {
+            const res = await fetch('http://localhost:3000/api/usuarios/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                cerrarModalNuevo();
+                await cargarClientes();
+                toast(`✅ Contrato ${data.numero_usuario} generado. OA enviada al NOC.`, 'ok');
+            } else {
+                toast('❌ ' + (data.mensaje || 'Error al procesar.'), 'err');
+            }
+        } catch {
+            toast('❌ Sin conexión con el servidor.', 'err');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '🚀 Procesar Alta y Enviar OA al NOC';
+        }
+    }
+
+    // ══════════════════════════════════════════
+    //  MODAL DETALLE
+    // ══════════════════════════════════════════
+    function verDetalle(c) {
+        document.getElementById('det-nombre').innerText = c.nombre_completo;
+        document.getElementById('det-numero').innerText = c.numero_usuario_unico || 'Sin contrato asignado';
+
+        const estadoBadge = !c.id_servicio
+            ? '<span class="badge badge-sin">Sin contrato</span>'
+            : c.estatus_servicio === 'Activo'
+                ? '<span class="badge badge-activo">Activo</span>'
+                : c.estatus_servicio === 'Suspendido'
+                    ? '<span class="badge badge-suspendido">Suspendido</span>'
+                    : '<span class="badge badge-cancelado">Cancelado</span>';
+
+        const fecha = c.fecha_activacion
+            ? new Date(c.fecha_activacion).toLocaleDateString('es-MX',{dateStyle:'long'})
+            : '—';
+        const fechaReg = c.fecha_registro
+            ? new Date(c.fecha_registro).toLocaleDateString('es-MX',{dateStyle:'long'})
+            : '—';
+
+        document.getElementById('detalle-contenido').innerHTML = `
+            <div class="detalle-bloque">
+                <div class="detalle-label">ID Cliente</div>
+                <div class="detalle-valor mono">ID-${c.id_cliente}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Estado del Servicio</div>
+                <div class="detalle-valor">${estadoBadge}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Correo Electrónico</div>
+                <div class="detalle-valor">${c.email || '—'}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Teléfono</div>
+                <div class="detalle-valor">${c.telefono || '—'}</div>
+            </div>
+            <div class="detalle-bloque full">
+                <div class="detalle-label">Dirección de Instalación del Enlace</div>
+                <div class="detalle-valor">${c.direccion || '—'}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Plan de Conectividad</div>
+                <div class="detalle-valor">${c.plan_contratado || '—'}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Línea Telefónica (VoIP)</div>
+                <div class="detalle-valor mono">${c.linea_telefonica_asignada || '—'}</div>
+            </div>
+            <div class="detalle-bloque full">
+                <div class="detalle-label">Equipo CPE Instalado</div>
+                <div class="detalle-valor">
+                    ${c.equipo_nombre
+                        ? `<div class="equipo-tag">📦 ${c.equipo_nombre} &nbsp; <code>${c.equipo_serie}</code></div>`
+                        : '— Sin equipo registrado —'}
+                </div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Fecha de Activación</div>
+                <div class="detalle-valor">${fecha}</div>
+            </div>
+            <div class="detalle-bloque">
+                <div class="detalle-label">Fecha de Registro</div>
+                <div class="detalle-valor">${fechaReg}</div>
+            </div>
+        `;
+        document.getElementById('ov-detalle').classList.add('abierto');
+    }
+    function cerrarDetalle() { document.getElementById('ov-detalle').classList.remove('abierto'); }
+
+    // Cerrar al hacer clic fuera
+    ['ov-nuevo','ov-detalle'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('abierto');
+        });
+    });
+
+    // ══════════════════════════════════════════
+    //  TOAST
+    // ══════════════════════════════════════════
+    function toast(msg, tipo='ok') {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.className = `toast ${tipo} show`;
+        setTimeout(() => t.classList.remove('show'), 4000);
+    }
+</script>
+<!-- ═══════════════ MODAL EDITAR CONTRATO ═══════════════ -->
+<div class="overlay" id="ov-editar">
+    <div class="modal">
+        <div class="modal-head">
+            <div class="modal-head-info">
+                <h2>Editar Contrato</h2>
+                <p id="edit-contrato-num" style="font-family:'JetBrains Mono',monospace;color:var(--azul);font-weight:600;">—</p>
+            </div>
+            <button class="btn-x" onclick="cerrarModalEditar()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-id-servicio">
+            <div class="form-seccion">
+                <div class="form-seccion-titulo">Plan de Conectividad</div>
+                <div class="planes-grid">
+                    <label><input type="radio" name="plan-edit" class="plan-radio" value="Enlace Dedicado 10 Mbps"><div class="plan-card"><div class="plan-check">✓</div><div class="plan-nombre">Enlace Dedicado</div><div class="plan-velocidad">10 Mbps</div><div class="plan-desc">Gobierno / PyME</div><div class="plan-precio">Desde $3,500 MXN/mes</div></div></label>
+                    <label><input type="radio" name="plan-edit" class="plan-radio" value="Enlace Dedicado 50 Mbps"><div class="plan-card"><div class="plan-check">✓</div><div class="plan-nombre">Enlace Dedicado</div><div class="plan-velocidad">50 Mbps</div><div class="plan-desc">Alta disponibilidad — SLA 99.9%</div><div class="plan-precio">Desde $7,200 MXN/mes</div></div></label>
+                    <label><input type="radio" name="plan-edit" class="plan-radio" value="Enlace Dedicado 100 Mbps"><div class="plan-card"><div class="plan-check">✓</div><div class="plan-nombre">Enlace Dedicado</div><div class="plan-velocidad">100 Mbps</div><div class="plan-desc">Industrial / Corporativo</div><div class="plan-precio">Desde $13,500 MXN/mes</div></div></label>
+                    <label><input type="radio" name="plan-edit" class="plan-radio" value="Enlace Dedicado 1 Gbps"><div class="plan-card"><div class="plan-check">✓</div><div class="plan-nombre">Enlace Dedicado</div><div class="plan-velocidad">1 Gbps</div><div class="plan-desc">Data Center / Gran Corporativo</div><div class="plan-precio">Desde $45,000 MXN/mes</div></div></label>
+                </div>
+            </div>
+            <div class="form-seccion" style="margin-top:18px;">
+                <div class="form-seccion-titulo">Línea Telefónica (VoIP)</div>
+                <div class="form-group">
+                    <label>Número Asignado</label>
+                    <input type="text" id="edit-linea" placeholder="55-XXXX-XXXX (opcional)">
+                </div>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn-cancelar-modal" onclick="cerrarModalEditar()">Cancelar</button>
+            <button class="btn-procesar" onclick="guardarEdicionContrato()">💾 Guardar Cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ MODAL CAMBIAR ESTATUS ═══════════════ -->
+<div class="overlay" id="ov-estatus">
+    <div class="modal" style="max-width:480px;">
+        <div class="modal-head">
+            <div class="modal-head-info">
+                <h2>Cambiar Estatus del Servicio</h2>
+                <p id="est-contrato-num" style="font-family:'JetBrains Mono',monospace;color:var(--azul);font-weight:600;">—</p>
+            </div>
+            <button class="btn-x" onclick="cerrarModalEstatus()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="est-id-servicio">
+            <p style="font-size:14px;color:var(--texto-2);margin-bottom:22px;">
+                Selecciona el nuevo estado del contrato. La cancelación es irreversible y generará automáticamente una <strong>Orden de Cancelación (OCS)</strong> al NOC para desconfigurar el enlace y recuperar el equipo.
+            </p>
+
+            <!-- OPCIONES ESTATUS -->
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <label style="cursor:pointer;">
+                    <input type="radio" name="nuevo-estatus" value="Activo" style="margin-right:10px;">
+                    <span style="font-weight:700;color:var(--verde);">✅ Activo</span>
+                    <span style="font-size:12px;color:var(--texto-2);display:block;margin-left:22px;">El servicio está operando con normalidad.</span>
+                </label>
+                <label style="cursor:pointer;">
+                    <input type="radio" name="nuevo-estatus" value="Suspendido" style="margin-right:10px;">
+                    <span style="font-weight:700;color:#856404;">⏸ Suspendido</span>
+                    <span style="font-size:12px;color:var(--texto-2);display:block;margin-left:22px;">Suspensión temporal (pago pendiente, mantenimiento, etc.).</span>
+                </label>
+                <label style="cursor:pointer;">
+                    <input type="radio" name="nuevo-estatus" value="Cancelado" style="margin-right:10px;">
+                    <span style="font-weight:700;color:var(--rojo);">🚫 Cancelado</span>
+                    <span style="font-size:12px;color:var(--texto-2);display:block;margin-left:22px;">Baja definitiva del servicio. Se genera OCS al NOC y se libera el equipo del inventario.</span>
+                </label>
+            </div>
+
+            <!-- ADVERTENCIA CANCELACIÓN -->
+            <div id="aviso-cancelacion" style="display:none;margin-top:18px;background:var(--rojo-bg);border:1px solid #f5b7b1;border-radius:8px;padding:14px;">
+                <strong style="color:var(--rojo);">⚠️ Acción irreversible</strong>
+                <p style="font-size:13px;color:var(--rojo);margin-top:4px;">Al confirmar, se enviará una Orden de Cancelación al NOC y el equipo quedará libre en inventario. No se puede reactivar este contrato.</p>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn-cancelar-modal" onclick="cerrarModalEstatus()">Cancelar</button>
+            <button class="btn-procesar" id="btn-confirmar-estatus" onclick="confirmarEstatus()">Confirmar Cambio</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ══ MODAL EDITAR CONTRATO ══════════════════════════════
+    function abrirModalEditar(c) {
+        document.getElementById('edit-id-servicio').value = c.id_servicio;
+        document.getElementById('edit-contrato-num').innerText = c.numero_usuario_unico + ' — ' + c.nombre_completo;
+        document.getElementById('edit-linea').value = c.linea_telefonica_asignada || '';
+
+        // Preseleccionar plan actual
+        document.querySelectorAll('input[name="plan-edit"]').forEach(r => {
+            r.checked = r.value === c.plan_contratado;
+        });
+
+        document.getElementById('ov-editar').classList.add('abierto');
+    }
+    function cerrarModalEditar() { document.getElementById('ov-editar').classList.remove('abierto'); }
+
+    async function guardarEdicionContrato() {
+        const id   = document.getElementById('edit-id-servicio').value;
+        const plan = document.querySelector('input[name="plan-edit"]:checked');
+        if (!plan) { toast('⚠️ Selecciona un plan.', 'err'); return; }
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/usuarios/contratos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    plan_contratado: plan.value,
+                    linea_telefonica_asignada: document.getElementById('edit-linea').value.trim()
+                })
+            });
+            if (res.ok) {
+                cerrarModalEditar();
+                await cargarClientes();
+                toast('✅ Contrato actualizado correctamente.', 'ok');
+            } else {
+                const e = await res.json();
+                toast('❌ ' + (e.mensaje || 'Error al actualizar.'), 'err');
+            }
+        } catch { toast('❌ Sin conexión con el servidor.', 'err'); }
+    }
+
+    // ══ MODAL CAMBIAR ESTATUS ══════════════════════════════
+    function abrirModalEstatus(c) {
+        document.getElementById('est-id-servicio').value = c.id_servicio;
+        document.getElementById('est-contrato-num').innerText = c.numero_usuario_unico + ' — ' + c.nombre_completo;
+
+        // Preseleccionar estatus actual
+        document.querySelectorAll('input[name="nuevo-estatus"]').forEach(r => {
+            r.checked = r.value === c.estatus_servicio;
+        });
+        document.getElementById('aviso-cancelacion').style.display = 'none';
+        document.getElementById('btn-confirmar-estatus').style.background = 'var(--azul)';
+
+        // Listener para mostrar aviso al seleccionar Cancelado
+        document.querySelectorAll('input[name="nuevo-estatus"]').forEach(r => {
+            r.addEventListener('change', function() {
+                const aviso = document.getElementById('aviso-cancelacion');
+                const btn   = document.getElementById('btn-confirmar-estatus');
+                if (this.value === 'Cancelado') {
+                    aviso.style.display = 'block';
+                    btn.style.background = 'var(--rojo)';
+                    btn.innerText = '🚫 Confirmar Cancelación';
+                } else {
+                    aviso.style.display = 'none';
+                    btn.style.background = 'var(--azul)';
+                    btn.innerText = 'Confirmar Cambio';
+                }
+            });
+        });
+
+        document.getElementById('ov-estatus').classList.add('abierto');
+    }
+    function cerrarModalEstatus() { document.getElementById('ov-estatus').classList.remove('abierto'); }
+
+    async function confirmarEstatus() {
+        const id      = document.getElementById('est-id-servicio').value;
+        const estatus = document.querySelector('input[name="nuevo-estatus"]:checked');
+        if (!estatus) { toast('⚠️ Selecciona un estatus.', 'err'); return; }
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/usuarios/contratos/${id}/estatus`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ estatus: estatus.value })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                cerrarModalEstatus();
+                await cargarClientes();
+                const extra = data.generaOCS ? ' OCS enviada al NOC.' : '';
+                toast(`✅ Servicio actualizado a: ${estatus.value}.${extra}`, 'ok');
+            } else {
+                toast('❌ ' + (data.mensaje || 'Error.'), 'err');
+            }
+        } catch { toast('❌ Sin conexión con el servidor.', 'err'); }
+    }
+
+    // ══ CERRAR AL CLICK FUERA ══════════════════════════════
+    ['ov-editar','ov-estatus'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('abierto');
+        });
+    });
+</script>
+
 </body>
-</html>
+</html> 
