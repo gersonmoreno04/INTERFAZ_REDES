@@ -36,6 +36,193 @@
         .sev-s2 { background: #F39C12; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .sev-s3 { background: #3498DB; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .texto-vacio { text-align: center; color: #7F8C8D; font-style: italic; padding: 20px; }
+ 
+        /* ── MODAL OA MEJORADO ── */
+        .modal-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,43,92,0.85);
+            align-items: center; justify-content: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 10px;
+            width: 100%; max-width: 780px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            border-top: 5px solid #2980B9;
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            background: #002B5C;
+            color: white;
+            padding: 20px 25px;
+            flex-shrink: 0;
+        }
+        .modal-header h3 { margin: 0 0 4px 0; font-size: 18px; }
+        .modal-header p  { margin: 0; font-size: 12px; color: #A8C4E0; }
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .modal-footer {
+            padding: 15px 25px;
+            border-top: 1px solid #E0E6ED;
+            text-align: right;
+            flex-shrink: 0;
+            background: #F8F9FA;
+        }
+ 
+        /* Secciones del modal OA */
+        .oa-section {
+            border: 1px solid #E0E6ED;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .oa-section-title {
+            background: #F0F4F8;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 12px;
+            color: #002B5C;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #E0E6ED;
+        }
+        .oa-section-body { padding: 16px; }
+ 
+        /* Info del cliente (solo lectura) */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .info-item label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            color: #7F8C8D;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        .info-item span {
+            font-size: 13px;
+            color: #333;
+            font-weight: 600;
+        }
+        .ip-badge {
+            display: inline-block;
+            background: #EBF5FB;
+            border: 1px solid #AED6F1;
+            color: #1A5276;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .ip-badge.wan { background: #EBF5FB; border-color: #AED6F1; color: #1A5276; }
+        .ip-badge.lan { background: #EAFAF1; border-color: #A9DFBF; color: #1A5276; }
+ 
+        /* Selector de enlace troncal */
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #002B5C;
+            margin-bottom: 6px;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+            font-size: 13px;
+            box-sizing: border-box;
+            background: white;
+            color: #333;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: #2980B9;
+            box-shadow: 0 0 0 3px rgba(41,128,185,0.15);
+        }
+ 
+        /* Panel de IPs troncales autorrellenas */
+        .troncal-ips {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .troncal-ip-box {
+            background: #1E1E1E;
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .troncal-ip-box .tip-label {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .troncal-ip-box .tip-value {
+            color: #4EC9B0;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .troncal-ip-box.vacio .tip-value { color: #555; }
+ 
+        /* Scripts de configuración */
+        .script-block {
+            background: #1E1E1E;
+            color: #D4D4D4;
+            padding: 14px 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .script-block .c-keyword  { color: #569CD6; }
+        .script-block .c-value    { color: #4EC9B0; }
+        .script-block .c-comment  { color: #6A9955; }
+ 
+        /* Botón enlace a OA imprimible */
+        .btn-imprimir {
+            background: transparent;
+            border: 1px solid #2980B9;
+            color: #2980B9;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-imprimir:hover { background: #EBF5FB; }
+ 
+        .badge-region {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #002B5C;
+            color: #D4AF37;
+        }
     </style>
 </head>
 <body>
@@ -63,12 +250,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID Ticket</th>
-                        <th>Severidad</th>
-                        <th>Cliente Afectado</th>
-                        <th>Descripción de Falla</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
+                        <th>ID Ticket</th><th>Severidad</th><th>Cliente Afectado</th>
+                        <th>Descripción de Falla</th><th>Estado</th><th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-fallas">
@@ -84,15 +267,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID OA</th>
-                        <th>Cliente</th>
-                        <th>Instalador Asignado</th>
-                        <th>Estado de Implementación</th>
-                        <th>Acción</th>
+                        <th>ID OA</th><th>Cliente</th><th>Región</th>
+                        <th>Instalador Asignado</th><th>Estado</th><th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-oa">
-                    <tr><td colspan="5" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
+                    <tr><td colspan="6" class="texto-vacio">Cargando base de datos en tiempo real...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -104,11 +284,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID Cambio</th>
-                        <th>Descripción Técnica</th>
-                        <th>Nivel de Riesgo</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
+                        <th>ID Cambio</th><th>Descripción Técnica</th>
+                        <th>Nivel de Riesgo</th><th>Estado</th><th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-cambios">
@@ -124,11 +301,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID OCS</th>
-                        <th>Cliente</th>
-                        <th>Motivo de Baja</th>
-                        <th>Estado Operativo</th>
-                        <th>Acción</th>
+                        <th>ID OCS</th><th>Cliente</th><th>Motivo de Baja</th>
+                        <th>Estado Operativo</th><th>Acción</th>
                     </tr>
                 </thead>
                 <tbody id="cuerpo-ocs">
@@ -139,86 +313,191 @@
     </div>
  
     <!-- ==========================================
-         VENTANAS EMERGENTES (MODALS) 
+         MODALS
          ========================================== -->
  
-    <!-- MODAL DE RESOLUCIÓN DE FALLAS (RCA) -->
+    <!-- MODAL RCA -->
     <div id="modal-rca" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
-        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #27AE60;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width:500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #27AE60;">
             <h3 style="color:#002B5C; margin-top:0;">Resolución de Incidente (RCA)</h3>
             <p style="font-size:13px; color:#7F8C8D;">Documente la causa raíz para cerrar el ticket.</p>
             <form id="form-rca">
                 <input type="hidden" id="rca-id-ticket">
-                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Causa Raíz del Problema</label>
-                <textarea id="rca-causa" required style="width:100%; height:60px; margin-bottom:15px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
-                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Acciones de Resolución</label>
-                <textarea id="rca-acciones" required style="width:100%; height:60px; margin-bottom:20px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom:5px;">Causa Raíz del Problema</label>
+                <textarea id="rca-causa" required style="width:100%; height:60px; margin-bottom:15px; padding:8px; border:1px solid #CCC; border-radius:4px; box-sizing:border-box;"></textarea>
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom:5px;">Acciones de Resolución</label>
+                <textarea id="rca-acciones" required style="width:100%; height:60px; margin-bottom:20px; padding:8px; border:1px solid #CCC; border-radius:4px; box-sizing:border-box;"></textarea>
                 <div style="text-align:right;">
-                    <button type="button" onclick="cerrarModalRCA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="button" onclick="cerrarModalRCA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight:bold;">Cancelar</button>
                     <button type="submit" class="btn-verde btn-accion">Cerrar Ticket</button>
                 </div>
             </form>
         </div>
     </div>
  
-    <!-- MODAL DE APROVISIONAMIENTO (OA) -->
-    <div id="modal-oa" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
-        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 650px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #2980B9;">
-            <h3 style="color:#002B5C; margin-top:0;">Generador de Scripts de Aprovisionamiento</h3>
-            <p style="font-size:13px; color:#7F8C8D;">Copie y ejecute los comandos para establecer la sesión BGP.</p>
-            <input type="hidden" id="oa-id-oculto">
-            <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">1. Configuración Provider Edge (PE)</label>
-            <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:15px; overflow-x:auto;">
-hostname PE-PUMATEL-01
-interface GigabitEthernet0/1
-description Enlace Dedicado - Cliente <span id="script-cliente-nombre" style="color:#569CD6;"></span>
-ip address 172.16.10.1 255.255.255.252
-no shutdown
-router bgp 65001
-neighbor 172.16.10.2 remote-as 65010
+    <!-- ═══════════════════════════════════════════════════════════
+         MODAL OA — PASO 6: ENLACE TRONCAL + AUTOCOMPLETADO DE IPs
+         ═══════════════════════════════════════════════════════════ -->
+    <div id="modal-oa" class="modal-overlay">
+        <div class="modal-box">
+ 
+            <!-- Encabezado -->
+            <div class="modal-header">
+                <h3>⚙️ Configuración de Aprovisionamiento (OA)</h3>
+                <p>Seleccione el enlace troncal NUBE y genere los scripts PE/CE para activar el servicio.</p>
             </div>
-            <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">2. Configuración Customer Edge (CPE)</label>
-            <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:20px; overflow-x:auto;">
-hostname CPE-CLIENTE
-interface GigabitEthernet0/0
-ip address 172.16.10.2 255.255.255.252
-no shutdown
-ip route 0.0.0.0 0.0.0.0 172.16.10.1
-            </div>
-            <div style="text-align:right;">
-                <button type="button" onclick="cerrarModalOA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
-                <button type="button" onclick="finalizarAprovisionamiento()" class="btn-azul btn-accion">Ejecutar y Finalizar OA</button>
+ 
+            <div class="modal-body">
+                <input type="hidden" id="oa-id-oculto">
+ 
+                <!-- 1. DATOS DEL CLIENTE (solo lectura, cargados desde la BD) -->
+                <div class="oa-section">
+                    <div class="oa-section-title">📋 Datos del Cliente y Contrato</div>
+                    <div class="oa-section-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Cliente</label>
+                                <span id="oa-info-cliente">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Región</label>
+                                <span id="oa-info-region">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Plan</label>
+                                <span id="oa-info-plan">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>No. Usuario</label>
+                                <span id="oa-info-usuario">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Equipo CPE</label>
+                                <span id="oa-info-equipo">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Serie CPE</label>
+                                <span id="oa-info-serie">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- 2. IPs WAN PÚBLICAS (asignadas por Ventas, solo lectura) -->
+                <div class="oa-section">
+                    <div class="oa-section-title">🌐 IPs WAN Públicas (asignadas por Ventas)</div>
+                    <div class="oa-section-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Red WAN /30</label>
+                                <span class="ip-badge wan" id="oa-ip-wan-red">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>IP WAN PE</label>
+                                <span class="ip-badge wan" id="oa-ip-wan-pe">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>IP WAN CE</label>
+                                <span class="ip-badge wan" id="oa-ip-wan-ce">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Broadcast WAN</label>
+                                <span class="ip-badge wan" id="oa-ip-wan-bc">—</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Red LAN /28</label>
+                                <span class="ip-badge lan" id="oa-ip-lan-red">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- 3. ENLACE TRONCAL — SELECTOR AGRUPADO POR ÁREA (Paso 6) -->
+                <div class="oa-section">
+                    <div class="oa-section-title">🔗 Enlace Troncal NUBE (asignado por NOC)</div>
+                    <div class="oa-section-body">
+                        <div class="form-group">
+                            <label>Seleccionar Enlace de Backbone</label>
+                            <select id="select-enlace" onchange="autocompletarIpsTroncales()">
+                                <option value="">— Seleccione un enlace NUBE —</option>
+                            </select>
+                        </div>
+ 
+                        <!-- IPs troncales que se autorellenan al seleccionar el enlace -->
+                        <div class="troncal-ips">
+                            <div class="troncal-ip-box" id="box-troncal-red">
+                                <div class="tip-label">Red Troncal /30</div>
+                                <div class="tip-value" id="val-troncal-red">Sin seleccionar</div>
+                            </div>
+                            <div class="troncal-ip-box" id="box-troncal-pe">
+                                <div class="tip-label">IP Troncal PE</div>
+                                <div class="tip-value" id="val-troncal-pe">Sin seleccionar</div>
+                            </div>
+                            <div class="troncal-ip-box" id="box-troncal-ce">
+                                <div class="tip-label">IP Troncal CE</div>
+                                <div class="tip-value" id="val-troncal-ce">Sin seleccionar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <!-- 4. SCRIPTS GENERADOS DINÁMICAMENTE -->
+                <div class="oa-section">
+                    <div class="oa-section-title">💻 Scripts de Configuración (generados automáticamente)</div>
+                    <div class="oa-section-body">
+                        <p style="font-size:12px; color:#7F8C8D; margin:0 0 12px 0;">
+                            Los scripts se actualizan en tiempo real al seleccionar el enlace. Copie y ejecute en el equipo correspondiente.
+                        </p>
+                        <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom:6px;">
+                            1. Configuración Provider Edge (PE)
+                        </label>
+                        <div class="script-block" id="script-pe">! Seleccione un enlace troncal para generar el script</div>
+ 
+                        <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin:14px 0 6px 0;">
+                            2. Configuración Customer Edge (CPE)
+                        </label>
+                        <div class="script-block" id="script-ce">! Seleccione un enlace troncal para generar el script</div>
+                    </div>
+                </div>
+ 
+            </div><!-- /modal-body -->
+ 
+            <!-- Footer con botones -->
+            <div class="modal-footer">
+                <a id="btn-ver-oa" href="#" target="_blank" class="btn-imprimir">🖨️ Ver OA Imprimible</a>
+                <button type="button" onclick="cerrarModalOA()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight:bold;">Cancelar</button>
+                <button type="button" id="btn-finalizar-oa" onclick="finalizarAprovisionamiento()" class="btn-azul btn-accion" disabled>
+                    ✔ Guardar y Finalizar OA
+                </button>
             </div>
         </div>
     </div>
  
-    <!-- MODAL DE CAMBIOS (CAB) -->
+    <!-- MODAL CAB -->
     <div id="modal-cab" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
-        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #F39C12;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width:500px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #F39C12;">
             <h3 style="color:#002B5C; margin-top:0;">Ejecución de Cambio en la Red</h3>
             <p style="font-size:13px; color:#7F8C8D;">Confirme el Plan de Rollback (reversión) antes de aplicar.</p>
             <form id="form-cab">
                 <input type="hidden" id="cab-id-oculto">
-                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Plan de Rollback Definido</label>
-                <textarea id="cab-rollback" required style="width:100%; height:80px; margin-bottom:20px; padding:8px; border: 1px solid #CCC; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom:5px;">Plan de Rollback Definido</label>
+                <textarea id="cab-rollback" required style="width:100%; height:80px; margin-bottom:20px; padding:8px; border:1px solid #CCC; border-radius:4px; box-sizing:border-box;"></textarea>
                 <div style="text-align:right;">
-                    <button type="button" onclick="cerrarModalCAB()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="button" onclick="cerrarModalCAB()" style="background:transparent; border:1px solid #E74C3C; color:#E74C3C; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight:bold;">Cancelar</button>
                     <button type="submit" class="btn-naranja btn-accion">Aplicar Cambio y Cerrar</button>
                 </div>
             </form>
         </div>
     </div>
  
-    <!-- MODAL DE CANCELACIÓN (OCS) -->
+    <!-- MODAL OCS -->
     <div id="modal-ocs" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,43,92,0.8); align-items:center; justify-content:center; z-index:1000;">
-        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width: 600px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #E74C3C;">
+        <div style="background:white; padding:30px; border-radius:8px; width:100%; max-width:600px; box-shadow:0 5px 15px rgba(0,0,0,0.3); border-top:5px solid #E74C3C;">
             <h3 style="color:#002B5C; margin-top:0;">Desconfiguración de Servicio (OCS)</h3>
             <p style="font-size:13px; color:#7F8C8D;">Ejecute los comandos de baja en el Provider Edge y confirme el retiro del equipo físico.</p>
-            
             <form id="form-ocs">
                 <input type="hidden" id="ocs-id-oculto">
-                
-                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom: 5px;">Comandos de Baja (PE)</label>
+                <label style="font-weight:bold; font-size:12px; color:#002B5C; display:block; margin-bottom:5px;">Comandos de Baja (PE)</label>
                 <div style="background:#1E1E1E; color:#D4D4D4; padding:15px; border-radius:4px; font-family: monospace; font-size:12px; margin-bottom:20px; overflow-x:auto;">
 interface GigabitEthernet0/1
 no description Enlace Dedicado - Cliente <span id="script-ocs-cliente" style="color:#569CD6;"></span>
@@ -226,18 +505,17 @@ no ip address
 shutdown
 exit
 router bgp 65001
-no neighbor 172.16.10.2 remote-as 65010
-                </div>
- 
-                <div style="margin-bottom: 25px; background: #F8F9FA; padding: 15px; border-radius: 4px; border: 1px solid #E0E6ED;">
-                    <label style="font-size: 13px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                        <input type="checkbox" id="ocs-equipo-recuperado" style="width: 18px; height: 18px; margin: 0;">
+no neighbor <span id="script-ocs-ip" style="color:#DCDCAA;">172.16.10.2</span> remote-as 65010
+! Enlace troncal liberado: <span id="script-ocs-troncal" style="color:#569CD6;"></span>
+</div>
+                <div style="margin-bottom:25px; background:#F8F9FA; padding:15px; border-radius:4px; border:1px solid #E0E6ED;">
+                    <label style="font-size:13px; font-weight:bold; color:#333; display:flex; align-items:center; gap:10px; cursor:pointer;">
+                        <input type="checkbox" id="ocs-equipo-recuperado" style="width:18px; height:18px; margin:0;">
                         Confirmar que el Ingeniero de Campo recuperó el equipo CPE.
                     </label>
                 </div>
-                
                 <div style="text-align:right;">
-                    <button type="button" onclick="cerrarModalOCS()" style="background:transparent; border:1px solid #7F8C8D; color:#7F8C8D; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight: bold;">Cancelar</button>
+                    <button type="button" onclick="cerrarModalOCS()" style="background:transparent; border:1px solid #7F8C8D; color:#7F8C8D; padding:8px 15px; border-radius:4px; cursor:pointer; margin-right:10px; font-weight:bold;">Cancelar</button>
                     <button type="submit" class="btn-rojo btn-accion">Finalizar Cancelación</button>
                 </div>
             </form>
@@ -245,194 +523,473 @@ no neighbor 172.16.10.2 remote-as 65010
     </div>
  
     <!-- ==========================================
-         SCRIPTS Y LÓGICA DE TIEMPO REAL
+         SCRIPTS
          ========================================== -->
     <script>
-        // Lógica de TABS
+ 
+        // ── ESTADO GLOBAL DEL MODAL OA ───────────────────────────
+        let _enlacesNube   = [];   // catálogo completo cargado desde el backend
+        let _oaDatosActual = {};   // datos de la OA que está abierta
+ 
+        // ── TABS ─────────────────────────────────────────────────
         function abrirTab(evt, nombreTab) {
-            let tabcontent = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
-            let tabbtns = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tabbtns.length; i++) tabbtns[i].className = tabbtns[i].className.replace(" active", "");
-            document.getElementById(nombreTab).style.display = "block";
-            evt.currentTarget.className += " active";
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(nombreTab).style.display = 'block';
+            evt.currentTarget.classList.add('active');
         }
  
-        // ── DATOS DE SESIÓN ──────────────────────────────────────────
-        const _miId = parseInt(localStorage.getItem('idEmpleado') || '0');
+        // ── SESIÓN ───────────────────────────────────────────────
+        const _miId     = parseInt(localStorage.getItem('idEmpleado') || '0');
         const _miNombre = localStorage.getItem('nombreEmpleado') || 'Técnico';
  
-        // CARGAS DE TABLAS
+        // ── CARGAR FALLAS ────────────────────────────────────────
         async function cargarFallas() {
             try {
-                const res = await fetch('http://localhost:3000/api/noc/fallas');
+                const res  = await fetch('http://localhost:3000/api/noc/fallas');
                 const todos = await res.json();
- 
-                // Solo mostrar tickets asignados a este técnico
                 const datos = todos.filter(f => f.id_tecnico === _miId);
- 
                 if (datos.length === 0) {
                     document.getElementById('cuerpo-fallas').innerHTML =
                         '<tr><td colspan="6" class="texto-vacio">No tienes tickets asignados en este momento.</td></tr>';
                     return;
                 }
- 
                 let html = '';
                 datos.forEach(f => {
-                    let claseSev = f.severidad === 'S1' ? 'sev-s1' : (f.severidad === 'S2' ? 'sev-s2' : 'sev-s3');
-                    let celdaAccion = (f.estado !== 'Resuelto' && f.estado !== 'Finalizado')
+                    const cls = f.severidad === 'S1' ? 'sev-s1' : f.severidad === 'S2' ? 'sev-s2' : 'sev-s3';
+                    const btn = (f.estado !== 'Resuelto' && f.estado !== 'Finalizado')
                         ? `<button class="btn-accion btn-verde" onclick="abrirModalRCA(${f.id_ticket})">Analizar (RCA)</button>`
-                        : '\u2714\uFE0F Finalizado';
- 
+                        : '✔️ Finalizado';
                     html += `<tr>
                         <td><strong>INC-${f.id_ticket}</strong></td>
-                        <td><span class="${claseSev}">${f.severidad || 'S3'}</span></td>
+                        <td><span class="${cls}">${f.severidad || 'S3'}</span></td>
                         <td>${f.cliente || 'Desconocido'}</td>
                         <td>${f.descripcion}</td>
-                        <td><strong style="color:${(f.estado === 'Resuelto' || f.estado === 'Finalizado') ? '#27AE60' : '#E74C3C'};">${f.estado.toUpperCase()}</strong></td>
-                        <td>${celdaAccion}</td>
+                        <td><strong style="color:${(f.estado==='Resuelto'||f.estado==='Finalizado')?'#27AE60':'#E74C3C'};">${f.estado.toUpperCase()}</strong></td>
+                        <td>${btn}</td>
                     </tr>`;
                 });
                 document.getElementById('cuerpo-fallas').innerHTML = html;
-            } catch (e) {
+            } catch(e) {
                 document.getElementById('cuerpo-fallas').innerHTML =
                     '<tr><td colspan="6" class="texto-vacio">Error de conexión con el servidor.</td></tr>';
             }
         }
-        async function cargarOA() {
-            try {
-                const res = await fetch('http://localhost:3000/api/noc/oa');
-                const datos = await res.json();
-                let html = '';
-                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay órdenes de aprovisionamiento pendientes.</td></tr>';
-                else {
-                    datos.forEach(oa => {
-                        html += `<tr>
-                            <td><strong>OA-${oa.id_oa}</strong></td>
-                            <td>${oa.cliente || 'Desconocido'}</td>
-                            <td>${oa.empresa_instaladora || 'Sin asignar'}</td>
-                            <td><strong style="color:${oa.estado === 'Operativo' ? '#27AE60' : '#333'}">${oa.estado}</strong></td>
-                            <td>${oa.estado !== 'Operativo' ? `<button class="btn-accion btn-azul" onclick="abrirModalOA(${oa.id_oa}, '${oa.cliente || 'Desconocido'}')">Generar Configuración</button>` : '✔️ Operativo'}</td>
-                        </tr>`;
-                    });
-                }
-                document.getElementById('cuerpo-oa').innerHTML = html;
-            } catch (e) { document.getElementById('cuerpo-oa').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
-        }
  
+        // ── CARGAR OA ────────────────────────────────────────────
+        async function cargarOA() {
+    try {
+        const res   = await fetch('http://localhost:3000/api/noc/oa');
+        const datos = await res.json();
+        let html = '';
+        
+        if (datos.length === 0) {
+            html = '<tr><td colspan="6" class="texto-vacio">No hay órdenes de aprovisionamiento pendientes.</td></tr>';
+        } else {
+            datos.forEach(oa => {
+                const regionBadge = oa.region
+                    ? `<span class="badge-region">${oa.region}</span>`
+                    : '<span style="color:#999">—</span>';
+                
+                // --- INICIO DE LA NUEVA LÓGICA DE BOTONES ---
+                let btnHtml = '';
+                if (oa.estado === 'Operativo') {
+                    // Botón para imprimir la OA finalizada
+                    btnHtml = `<button class="btn-accion" style="background:#7F8C8D; color:white;" onclick="window.open('oa_detalle.html?id=${oa.id_oa}', '_blank')">Ver Detalle / Imprimir OA</button>`;
+                } else {
+                    // Botón para configurar usando tu función original
+                    btnHtml = `<button class="btn-accion btn-azul" onclick="abrirModalOA(${oa.id_oa})">Configurar OA</button>`;
+                }
+                // --- FIN DE LA NUEVA LÓGICA ---
+
+                html += `<tr>
+                    <td><strong>OA-${oa.id_oa}</strong></td>
+                    <td>${oa.cliente || 'Desconocido'}</td>
+                    <td>${regionBadge}</td>
+                    <td>${oa.empresa_instaladora || 'Sin asignar'}</td>
+                    <td><strong style="color:${oa.estado==='Operativo'?'#27AE60':'#333'}">${oa.estado}</strong></td>
+                    <td>${btnHtml}</td>
+                </tr>`;
+            });
+        }
+        document.getElementById('cuerpo-oa').innerHTML = html;
+    } catch(e) {
+        document.getElementById('cuerpo-oa').innerHTML =
+            '<tr><td colspan="6" class="texto-vacio">Error de conexión.</td></tr>';
+    }
+}
+ 
+        // ── CARGAR CAB ───────────────────────────────────────────
         async function cargarCAB() {
             try {
-                const res = await fetch('http://localhost:3000/api/noc/cab');
+                const res   = await fetch('http://localhost:3000/api/noc/cab');
                 const datos = await res.json();
                 let html = '';
-                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay cambios programados en la red.</td></tr>';
-                else {
-                    datos.forEach(cab => {
-                        let claseSev = cab.nivel_riesgo === 'Alto' ? 'sev-s1' : 'sev-s3';
-                        html += `<tr>
-                            <td><strong>CAB-${cab.id_cambio}</strong></td>
-                            <td>${cab.descripcion}</td>
-                            <td><span class="${claseSev}">${cab.nivel_riesgo.toUpperCase()}</span></td>
-                            <td><strong style="color:${cab.estado === 'Completado' ? '#27AE60' : '#333'}">${cab.estado}</strong></td>
-                            <td>${cab.estado !== 'Completado' ? `<button class="btn-accion btn-naranja" onclick="abrirModalCAB(${cab.id_cambio}, '${cab.plan_rollback || ''}')">Ver Rollback y Ejecutar</button>` : '✔️ Completado'}</td>
-                        </tr>`;
-                    });
-                }
+                if (datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay cambios programados en la red.</td></tr>';
+                else datos.forEach(cab => {
+                    const cls = cab.nivel_riesgo === 'Alto' ? 'sev-s1' : 'sev-s3';
+                    html += `<tr>
+                        <td><strong>CAB-${cab.id_cambio}</strong></td>
+                        <td>${cab.descripcion}</td>
+                        <td><span class="${cls}">${cab.nivel_riesgo.toUpperCase()}</span></td>
+                        <td><strong style="color:${cab.estado==='Completado'?'#27AE60':'#333'}">${cab.estado}</strong></td>
+                        <td>${cab.estado !== 'Completado'
+                            ? `<button class="btn-accion btn-naranja" onclick="abrirModalCAB(${cab.id_cambio},'${cab.plan_rollback||''}')">Ver Rollback y Ejecutar</button>`
+                            : '✔️ Completado'}</td>
+                    </tr>`;
+                });
                 document.getElementById('cuerpo-cambios').innerHTML = html;
-            } catch (e) { document.getElementById('cuerpo-cambios').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
+            } catch(e) { document.getElementById('cuerpo-cambios').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
         }
  
+        // ── CARGAR OCS ───────────────────────────────────────────
         async function cargarOCS() {
             try {
-                const res = await fetch('http://localhost:3000/api/noc/ocs');
+                const res   = await fetch('http://localhost:3000/api/noc/ocs');
                 const datos = await res.json();
                 let html = '';
-                if(datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay órdenes de cancelación pendientes.</td></tr>';
-                else {
-                    datos.forEach(ocs => {
-                        html += `<tr>
-                            <td><strong>OCS-${ocs.id_ocs}</strong></td>
-                            <td>${ocs.cliente || 'Desconocido'}</td>
-                            <td>${ocs.motivo}</td>
-                            <td><strong style="color:${ocs.estado === 'Finalizado' ? '#27AE60' : '#F39C12'};">${ocs.estado}</strong></td>
-                            <td>${ocs.estado !== 'Finalizado' ? `<button class="btn-accion btn-rojo" onclick="abrirModalOCS(${ocs.id_ocs}, '${ocs.cliente || 'Desconocido'}')">Ejecutar Baja</button>` : '✔️ Finalizado'}</td>
-                        </tr>`;
-                    });
-                }
+                if (datos.length === 0) html = '<tr><td colspan="5" class="texto-vacio">No hay órdenes de cancelación pendientes.</td></tr>';
+                else datos.forEach(ocs => {
+                    html += `<tr>
+                        <td><strong>OCS-${ocs.id_ocs}</strong></td>
+                        <td>${ocs.cliente || 'Desconocido'}</td>
+                        <td>${ocs.motivo}</td>
+                        <td><strong style="color:${ocs.estado==='Finalizado'?'#27AE60':'#F39C12'};">${ocs.estado}</strong></td>
+                        <td>${ocs.estado !== 'Finalizado'
+                            ? // Cambia la línea del botón rojo por esta, para que mande los 4 parámetros:
+                              `<button class="btn-accion btn-rojo" onclick="abrirModalOCS(${ocs.id_ocs}, '${ocs.cliente || 'Desconocido'}', '${ocs.enlace_troncal || 'N/A'}', '${ocs.ip_troncal_ce || '172.16.10.2'}')">Ejecutar Baja</button>`
+                            : '✔️ Finalizado'}</td>
+                    </tr>`;
+                });
                 document.getElementById('cuerpo-ocs').innerHTML = html;
-            } catch (e) { document.getElementById('cuerpo-ocs').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
+            } catch(e) { document.getElementById('cuerpo-ocs').innerHTML = '<tr><td colspan="5" class="texto-vacio">Error de conexión.</td></tr>'; }
         }
  
-        // LÓGICA DE MODALS
-        // RCA
-        function abrirModalRCA(id_ticket) { document.getElementById('rca-id-ticket').value = id_ticket; document.getElementById('form-rca').reset(); document.getElementById('modal-rca').style.display = 'flex'; }
+        // ══════════════════════════════════════════════════════════
+        // PASO 6 — LÓGICA COMPLETA DEL MODAL OA
+        // ══════════════════════════════════════════════════════════
+ 
+        /**
+         * abrirModalOA(id_oa)
+         * 1. Llama al backend para obtener todos los datos de la OA (incluyendo IPs)
+         * 2. Carga el catálogo de enlaces NUBE si aún no está cargado
+         * 3. Puebla todos los campos del modal
+         */
+        async function abrirModalOA(id_oa) {
+            // Mostrar modal vacío mientras carga
+            document.getElementById('oa-id-oculto').value = id_oa;
+            document.getElementById('modal-oa').style.display = 'flex';
+            document.getElementById('btn-finalizar-oa').disabled = true;
+            document.getElementById('btn-ver-oa').href = `oa_detalle.html?id=${id_oa}`;
+            limpiarInfoOA();
+ 
+            try {
+                // Obtener datos de la OA desde el endpoint que ya devuelve IPs y datos del cliente
+                const [resOA, resEnlaces] = await Promise.all([
+                    fetch('http://localhost:3000/api/noc/oa'),
+                    _enlacesNube.length === 0
+                        ? fetch('http://localhost:3000/api/direccionamiento/enlaces-nube')
+                        : Promise.resolve(null)
+                ]);
+ 
+                const todasOA = await resOA.json();
+                const oa = todasOA.find(o => o.id_oa == id_oa);
+                if (!oa) { alert('No se encontró la OA.'); cerrarModalOA(); return; }
+ 
+                // Guardar datos globales para usarlos al finalizar
+                _oaDatosActual = oa;
+ 
+                // Cargar catálogo de enlaces si vino la respuesta
+                if (resEnlaces) {
+                    _enlacesNube = await resEnlaces.json();
+                    poblarSelectEnlaces();
+                }
+ 
+                // Si ya habíamos cargado antes, repoblar de todos modos
+                if (_enlacesNube.length > 0 && !resEnlaces) poblarSelectEnlaces();
+ 
+                // ── Información del cliente ──
+                document.getElementById('oa-info-cliente').textContent = oa.cliente || '—';
+                document.getElementById('oa-info-region').innerHTML    =
+                    oa.region ? `<span class="badge-region">${oa.region}</span>` : '—';
+                document.getElementById('oa-info-plan').textContent    = oa.plan_contratado || '—';
+                document.getElementById('oa-info-usuario').textContent = oa.numero_usuario_unico || '—';
+                document.getElementById('oa-info-equipo').textContent  = oa.equipo_nombre || '—';
+                document.getElementById('oa-info-serie').textContent   = oa.equipo_serie  || '—';
+ 
+                // ── IPs WAN/LAN (asignadas por Ventas) ──
+                document.getElementById('oa-ip-wan-red').textContent = oa.ip_wan_red || '—';
+                document.getElementById('oa-ip-wan-pe').textContent  = oa.ip_wan_pe  || '—';
+                document.getElementById('oa-ip-wan-ce').textContent  = oa.ip_wan_ce  || '—';
+                document.getElementById('oa-ip-wan-bc').textContent  = oa.ip_wan_broadcast || '—';
+                document.getElementById('oa-ip-lan-red').textContent = oa.ip_lan_red || '—';
+ 
+                // Si la OA ya tenía un enlace troncal guardado, preseleccionarlo
+                if (oa.enlace_troncal) {
+                    const sel = document.getElementById('select-enlace');
+                    // Buscar la opción que coincida con el nombre del enlace
+                    for (let opt of sel.options) {
+                        if (opt.value === oa.enlace_troncal) {
+                            sel.value = oa.enlace_troncal;
+                            break;
+                        }
+                    }
+                    autocompletarIpsTroncales();
+                }
+ 
+            } catch(err) {
+                console.error(err);
+                alert('Error al cargar datos de la OA.');
+            }
+        }
+ 
+        /** Puebla el <select> con optgroups por área */
+        function poblarSelectEnlaces() {
+            const sel = document.getElementById('select-enlace');
+            sel.innerHTML = '<option value="">— Seleccione un enlace NUBE —</option>';
+            _enlacesNube.forEach(area => {
+                const grp = document.createElement('optgroup');
+                grp.label = area.nombre;
+                area.enlaces.forEach(e => {
+                    const opt = document.createElement('option');
+                    opt.value = e.enlace;
+                    opt.textContent = e.enlace;
+                    // Guardamos las IPs como data-attributes para autocompletar sin búsqueda
+                    opt.dataset.red = e.red;
+                    opt.dataset.pe  = e.pe;
+                    opt.dataset.ce  = e.ce;
+                    grp.appendChild(opt);
+                });
+                sel.appendChild(grp);
+            });
+        }
+ 
+        /**
+         * autocompletarIpsTroncales()
+         * Se llama al cambiar el select. Lee los data-attributes y pinta
+         * los badges de IP troncal + regenera los scripts de configuración.
+         */
+        function autocompletarIpsTroncales() {
+            const sel = document.getElementById('select-enlace');
+            const opt = sel.options[sel.selectedIndex];
+ 
+            if (!opt || !opt.value) {
+                // Sin selección → limpiar
+                setTroncalBoxes('Sin seleccionar', 'Sin seleccionar', 'Sin seleccionar', true);
+                limpiarScripts();
+                document.getElementById('btn-finalizar-oa').disabled = true;
+                return;
+            }
+ 
+            const red = opt.dataset.red;
+            const pe  = opt.dataset.pe;
+            const ce  = opt.dataset.ce;
+ 
+            setTroncalBoxes(red, pe, ce, false);
+            generarScripts(pe, ce);
+            document.getElementById('btn-finalizar-oa').disabled = false;
+        }
+ 
+        function setTroncalBoxes(red, pe, ce, vacio) {
+            ['red','pe','ce'].forEach(k => {
+                document.getElementById(`box-troncal-${k}`).className = 'troncal-ip-box' + (vacio ? ' vacio' : '');
+            });
+            document.getElementById('val-troncal-red').textContent = red;
+            document.getElementById('val-troncal-pe').textContent  = pe;
+            document.getElementById('val-troncal-ce').textContent  = ce;
+        }
+ 
+        /**
+         * generarScripts(ipTroncalPE, ipTroncalCE)
+         * Genera los scripts de configuración usando las IPs WAN del cliente
+         * y las IPs troncales del enlace seleccionado.
+         */
+        function generarScripts(troncalPe, troncalCe) {
+            const oa = _oaDatosActual;
+            const nombreCliente = (oa.cliente || 'CLIENTE').replace(/\s+/g,'_').toUpperCase();
+            const ipWanPe  = oa.ip_wan_pe  || '0.0.0.0';
+            const ipWanCe  = oa.ip_wan_ce  || '0.0.0.0';
+            const ipLanRed = oa.ip_lan_red ? oa.ip_lan_red.replace('/28','') : '0.0.0.0';
+ 
+            document.getElementById('script-pe').innerHTML =
+`<span style="color:#6A9955">! ── Provider Edge (PE) — Cliente: ${nombreCliente} ──</span>
+<span style="color:#569CD6">interface</span> GigabitEthernet0/1
+  <span style="color:#569CD6">description</span> <span style="color:#CE9178">Enlace_Dedicado_${nombreCliente}</span>
+  <span style="color:#569CD6">ip address</span> <span style="color:#4EC9B0">${ipWanPe} 255.255.255.252</span>
+  <span style="color:#569CD6">no shutdown</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">interface</span> GigabitEthernet0/2
+  <span style="color:#569CD6">description</span> <span style="color:#CE9178">Troncal_NUBE_${(oa.enlace_troncal||'NUBE').replace(/\s/g,'_')}</span>
+  <span style="color:#569CD6">ip address</span> <span style="color:#4EC9B0">${troncalPe} 255.255.255.252</span>
+  <span style="color:#569CD6">no shutdown</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">router bgp</span> 65001
+  <span style="color:#569CD6">neighbor</span> <span style="color:#4EC9B0">${ipWanCe}</span> <span style="color:#569CD6">remote-as</span> 65010
+  <span style="color:#569CD6">neighbor</span> <span style="color:#4EC9B0">${troncalCe}</span> <span style="color:#569CD6">remote-as</span> 65000`;
+ 
+            document.getElementById('script-ce').innerHTML =
+`<span style="color:#6A9955">! ── Customer Edge (CPE) — ${nombreCliente} ──</span>
+<span style="color:#569CD6">hostname</span> <span style="color:#CE9178">CPE-${nombreCliente}</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">interface</span> GigabitEthernet0/0
+  <span style="color:#569CD6">description</span> <span style="color:#CE9178">WAN_Pumatel</span>
+  <span style="color:#569CD6">ip address</span> <span style="color:#4EC9B0">${ipWanCe} 255.255.255.252</span>
+  <span style="color:#569CD6">no shutdown</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">interface</span> GigabitEthernet0/1
+  <span style="color:#569CD6">description</span> <span style="color:#CE9178">LAN_Cliente</span>
+  <span style="color:#569CD6">ip address</span> <span style="color:#4EC9B0">${ipLanRed} 255.255.255.240</span>
+  <span style="color:#569CD6">no shutdown</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">ip route</span> 0.0.0.0 0.0.0.0 <span style="color:#4EC9B0">${ipWanPe}</span>
+<span style="color:#569CD6">!</span>
+<span style="color:#569CD6">router bgp</span> 65010
+  <span style="color:#569CD6">neighbor</span> <span style="color:#4EC9B0">${ipWanPe}</span> <span style="color:#569CD6">remote-as</span> 65001`;
+        }
+ 
+        function limpiarInfoOA() {
+            ['oa-info-cliente','oa-info-plan','oa-info-usuario','oa-info-equipo','oa-info-serie'].forEach(id => {
+                document.getElementById(id).textContent = '—';
+            });
+            document.getElementById('oa-info-region').innerHTML = '—';
+            ['oa-ip-wan-red','oa-ip-wan-pe','oa-ip-wan-ce','oa-ip-wan-bc','oa-ip-lan-red'].forEach(id => {
+                document.getElementById(id).textContent = '—';
+            });
+            document.getElementById('select-enlace').value = '';
+            setTroncalBoxes('Sin seleccionar','Sin seleccionar','Sin seleccionar', true);
+            limpiarScripts();
+        }
+ 
+        function limpiarScripts() {
+            document.getElementById('script-pe').textContent = '! Seleccione un enlace troncal para generar el script';
+            document.getElementById('script-ce').textContent = '! Seleccione un enlace troncal para generar el script';
+        }
+ 
+        function cerrarModalOA() {
+            document.getElementById('modal-oa').style.display = 'none';
+            _oaDatosActual = {};
+        }
+ 
+        /**
+         * finalizarAprovisionamiento()
+         * Llama al endpoint PUT /api/noc/oa/:id/configurar con el enlace
+         * troncal y las IPs troncales PE/CE seleccionadas.
+         */
+        async function finalizarAprovisionamiento() {
+            const id_oa = document.getElementById('oa-id-oculto').value;
+            const sel   = document.getElementById('select-enlace');
+            const opt   = sel.options[sel.selectedIndex];
+ 
+            if (!opt || !opt.value) {
+                alert('Debe seleccionar un enlace troncal antes de finalizar.');
+                return;
+            }
+ 
+            const payload = {
+                enlace_troncal:  opt.value,
+                ip_troncal_red:  opt.dataset.red,
+                ip_troncal_pe:   opt.dataset.pe,
+                ip_troncal_ce:   opt.dataset.ce,
+            };
+ 
+            try {
+                const res = await fetch(
+                    `http://localhost:3000/api/noc/oa/${id_oa}/configurar`,
+                    { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+                );
+                if (res.ok) {
+                    alert(`OA-${id_oa} provisionada exitosamente.\nEnlace: ${opt.value}`);
+                    cerrarModalOA();
+                    cargarOA();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + (err.mensaje || 'No se pudo guardar.'));
+                }
+            } catch(err) {
+                alert('Error de conexión con el servidor.');
+            }
+        }
+ 
+        // ── MODAL RCA ─────────────────────────────────────────────
+        function abrirModalRCA(id_ticket) {
+            document.getElementById('rca-id-ticket').value = id_ticket;
+            document.getElementById('form-rca').reset();
+            document.getElementById('modal-rca').style.display = 'flex';
+        }
         function cerrarModalRCA() { document.getElementById('modal-rca').style.display = 'none'; }
         document.getElementById('form-rca').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = { causa_raiz: document.getElementById('rca-causa').value, acciones_resolucion: document.getElementById('rca-acciones').value };
+            const payload = {
+                causa_raiz:         document.getElementById('rca-causa').value,
+                acciones_resolucion: document.getElementById('rca-acciones').value
+            };
             try {
-                const res = await fetch(`http://localhost:3000/api/noc/fallas/${document.getElementById('rca-id-ticket').value}/resolver`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if(res.ok) { alert('Ticket cerrado correctamente.'); cerrarModalRCA(); cargarFallas(); }
-            } catch (error) { alert('Error de conexión.'); }
+                const res = await fetch(
+                    `http://localhost:3000/api/noc/fallas/${document.getElementById('rca-id-ticket').value}/resolver`,
+                    { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+                );
+                if (res.ok) { alert('Ticket cerrado correctamente.'); cerrarModalRCA(); cargarFallas(); }
+            } catch(err) { alert('Error de conexión.'); }
         });
  
-        // OA
-        function abrirModalOA(id_oa, nombre) { document.getElementById('oa-id-oculto').value = id_oa; document.getElementById('script-cliente-nombre').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); document.getElementById('modal-oa').style.display = 'flex'; }
-        function cerrarModalOA() { document.getElementById('modal-oa').style.display = 'none'; }
-        async function finalizarAprovisionamiento() {
-            try {
-                const res = await fetch(`http://localhost:3000/api/noc/oa/${document.getElementById('oa-id-oculto').value}/configurar`, { method: 'PUT' });
-                if(res.ok) { alert('Servicio provisionado exitosamente.'); cerrarModalOA(); cargarOA(); }
-            } catch (error) { alert('Error de conexión.'); }
+        // ── MODAL CAB ─────────────────────────────────────────────
+        function abrirModalCAB(id_cambio, rollback) {
+            document.getElementById('cab-id-oculto').value = id_cambio;
+            document.getElementById('cab-rollback').value = rollback !== 'null' ? rollback : '';
+            document.getElementById('modal-cab').style.display = 'flex';
         }
- 
-        // CAB
-        function abrirModalCAB(id_cambio, rollback) { document.getElementById('cab-id-oculto').value = id_cambio; document.getElementById('cab-rollback').value = rollback !== 'null' ? rollback : ''; document.getElementById('modal-cab').style.display = 'flex'; }
         function cerrarModalCAB() { document.getElementById('modal-cab').style.display = 'none'; }
         document.getElementById('form-cab').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
-                const res = await fetch(`http://localhost:3000/api/noc/cab/${document.getElementById('cab-id-oculto').value}/ejecutar`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_rollback: document.getElementById('cab-rollback').value }) });
-                if(res.ok) { alert('Cambio en red ejecutado.'); cerrarModalCAB(); cargarCAB(); }
-            } catch (error) { alert('Error de conexión.'); }
+                const res = await fetch(
+                    `http://localhost:3000/api/noc/cab/${document.getElementById('cab-id-oculto').value}/ejecutar`,
+                    { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan_rollback: document.getElementById('cab-rollback').value }) }
+                );
+                if (res.ok) { alert('Cambio en red ejecutado.'); cerrarModalCAB(); cargarCAB(); }
+            } catch(err) { alert('Error de conexión.'); }
         });
  
-        // OCS (CANCELACIONES)
-        function abrirModalOCS(id_ocs, nombre) { 
-            document.getElementById('ocs-id-oculto').value = id_ocs; 
-            document.getElementById('script-ocs-cliente').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); 
-            document.getElementById('ocs-equipo-recuperado').checked = false;
-            document.getElementById('modal-ocs').style.display = 'flex'; 
-        }
+        // ── MODAL OCS ─────────────────────────────────────────────
+        // Reemplaza tu abrirModalOCS por esta versión:
+function abrirModalOCS(id_ocs, nombre, troncal, ip_ce) { 
+    document.getElementById('ocs-id-oculto').value = id_ocs; 
+    document.getElementById('script-ocs-cliente').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); 
+    
+    // Aquí inyectamos los nuevos datos del backend
+    document.getElementById('script-ocs-troncal').innerText = troncal;
+    document.getElementById('script-ocs-ip').innerText = ip_ce;
+    
+    document.getElementById('ocs-equipo-recuperado').checked = false;
+    document.getElementById('modal-ocs').style.display = 'flex'; 
+}
         function cerrarModalOCS() { document.getElementById('modal-ocs').style.display = 'none'; }
         document.getElementById('form-ocs').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = { equipo_recuperado: document.getElementById('ocs-equipo-recuperado').checked };
             try {
-                const res = await fetch(`http://localhost:3000/api/noc/ocs/${document.getElementById('ocs-id-oculto').value}/desconfigurar`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if(res.ok) { alert('Cancelación ejecutada.'); cerrarModalOCS(); cargarOCS(); }
-            } catch (error) { alert('Error de conexión.'); }
+                const res = await fetch(
+                    `http://localhost:3000/api/noc/ocs/${document.getElementById('ocs-id-oculto').value}/desconfigurar`,
+                    { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+                );
+                if (res.ok) { alert('Cancelación ejecutada.'); cerrarModalOCS(); cargarOCS(); }
+            } catch(err) { alert('Error de conexión.'); }
         });
  
+        // ── ASIGNAR TICKET ────────────────────────────────────────
         async function asignarATecnico(idTicket, idTecnico) {
-    if(!idTecnico) return;
-    
-    try {
-        const res = await fetch(`http://localhost:3000/api/noc/fallas/asignar`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_ticket: idTicket, id_tecnico: idTecnico })
-        });
-        if(res.ok) {
-            alert('Ticket asignado al técnico exitosamente.');
-            cargarFallas();
+            if (!idTecnico) return;
+            try {
+                const res = await fetch('http://localhost:3000/api/noc/fallas/asignar', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_ticket: idTicket, id_tecnico: idTecnico })
+                });
+                if (res.ok) { alert('Ticket asignado al técnico exitosamente.'); cargarFallas(); }
+            } catch(err) { alert('Error al conectar con el servidor.'); }
         }
-    } catch (error) {
-        alert('Error al conectar con el servidor.');
-    }
-}
  
-        // CERRAR SESIÓN
+        // ── SESIÓN ────────────────────────────────────────────────
         function cerrarSesion() {
             localStorage.removeItem('idRol');
             localStorage.removeItem('nombreEmpleado');
@@ -440,13 +997,12 @@ no neighbor 172.16.10.2 remote-as 65010
             window.location.href = 'login.html';
         }
  
-        // Verificar que sea técnico NOC (rol 2); si es rol 6 redirigir a su panel
+        // Verificar rol
         (function() {
             const rol = parseInt(localStorage.getItem('idRol') || '0');
             if (rol === 6) window.location.href = 'noc_admin.html';
         })();
  
-        // INIT
         window.onload = cargarFallas;
     </script>
 </body>

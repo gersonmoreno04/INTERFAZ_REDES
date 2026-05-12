@@ -81,23 +81,27 @@ const obtenerCambios = async (req, res) => {
     }
 };
 
-// 4. OBTENER OCS (Módulo de Cancelaciones)
+// 4. OBTENER OCS (Módulo de Cancelaciones) - Actualizado para obtener enlace troncal e IP
 const obtenerCancelaciones = async (req, res) => {
     try {
         const query = `
-            SELECT oc.*, c.nombre_completo AS cliente 
+            SELECT 
+                oc.*, 
+                c.nombre_completo AS cliente,
+                oa.enlace_troncal,
+                oa.ip_troncal_ce
             FROM ordenes_cancelacion oc
             LEFT JOIN clientes c ON oc.id_cliente = c.id_cliente
+            LEFT JOIN ordenes_aprovisionamiento oa ON oc.id_cliente = oa.id_cliente
             ORDER BY oc.id_ocs DESC
         `;
         const [rows] = await db.query(query);
         res.json(rows);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ mensaje: "Error al obtener órdenes de cancelación" });
     }
 };
-
-const { registrarAccion } = require('./bitacoraController'); // Asegúrate de tener esto arriba
 
 // 5. RESOLVER FALLA (Guardar RCA y cerrar ticket)
 const resolverFalla = async (req, res) => {

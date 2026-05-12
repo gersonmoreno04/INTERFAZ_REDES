@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumatel - Orden de Aprovisionamiento</title>
+    <style>
+        /* ESTILOS BASE */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #525659; color: #333; }
+        
+        /* BARRA DE CONTROLES (No se imprime) */
+        .toolbar {
+            background-color: #323639;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+        .btn-tool {
+            background: #2980B9; color: white; border: none; padding: 10px 20px;
+            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+        .btn-tool:hover { background: #1A5276; }
+        .btn-close { background: transparent; border: 1px solid #E74C3C; color: #E74C3C; }
+        .btn-close:hover { background: #E74C3C; color: white; }
+
+        /* CONTENEDOR TIPO HOJA DE PAPEL */
+        .document-page {
+            background: white;
+            width: 210mm; /* Tamaño A4 / Carta aprox */
+            min-height: 297mm;
+            margin: 80px auto 40px auto; /* Espacio para el toolbar */
+            padding: 20mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* ENCABEZADO OFICIAL */
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 4px solid #002B5C;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .doc-header img { height: 60px; filter: grayscale(100%); } /* Logo en B/N para impresión */
+        .doc-title { text-align: right; }
+        .doc-title h1 { margin: 0; color: #002B5C; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        .doc-title p { margin: 5px 0 0 0; font-size: 14px; color: #7F8C8D; font-weight: bold; }
+        .oa-number { color: #D4AF37; font-size: 24px; }
+
+        /* SECCIONES DEL DOCUMENTO */
+        .section { margin-bottom: 30px; }
+        .section-title {
+            background: #F0F4F8; color: #002B5C; padding: 8px 12px;
+            font-size: 14px; font-weight: bold; text-transform: uppercase;
+            border-left: 5px solid #D4AF37; margin-bottom: 15px;
+        }
+        
+        /* CUADRÍCULAS DE DATOS */
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .data-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        
+        .data-box { border: 1px solid #E0E6ED; padding: 10px; border-radius: 4px; }
+        .data-box label { display: block; font-size: 10px; color: #7F8C8D; text-transform: uppercase; margin-bottom: 4px; font-weight: bold; }
+        .data-box span { font-size: 14px; font-weight: bold; color: #2C3E50; font-family: monospace; }
+        
+        /* FIRMAS */
+        .signatures { display: flex; justify-content: space-between; margin-top: 60px; }
+        .signature-box { width: 40%; text-align: center; }
+        .signature-line { border-bottom: 1px solid #333; height: 50px; margin-bottom: 10px; }
+        .signature-name { font-size: 12px; font-weight: bold; color: #002B5C; }
+        .signature-role { font-size: 11px; color: #7F8C8D; }
+
+        /* MAGIA PARA IMPRESIÓN / PDF */
+        @media print {
+            body { background: white; margin: 0; padding: 0; }
+            .toolbar { display: none !important; }
+            .document-page { margin: 0; padding: 0; box-shadow: none; width: 100%; min-height: auto; }
+            .data-box { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button class="btn-tool btn-close" onclick="window.close()">✖ Cerrar Vista</button>
+        <div style="color: white; font-weight: bold; font-size: 14px;">Vista Previa de Impresión</div>
+        <button class="btn-tool" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+
+    <div class="document-page">
+        
+        <div class="doc-header">
+            <img src="logo_pumatel.png" alt="PumaTel Logo">
+            <div class="doc-title">
+                <h1>Orden de Aprovisionamiento</h1>
+                <p>FOLIO: <span class="oa-number" id="doc-id-oa">Cargando...</span></p>
+                <p style="font-weight: normal; font-size: 12px;">Fecha de emisión: <span id="doc-fecha"></span></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">1. Información del Suscriptor y Contrato</div>
+            <div class="data-grid">
+                <div class="data-box"><label>Cliente / Razón Social</label><span id="doc-cliente">—</span></div>
+                <div class="data-box"><label>Número de Usuario Único</label><span id="doc-usuario">—</span></div>
+                <div class="data-box"><label>Plan Contratado</label><span id="doc-plan">—</span></div>
+                <div class="data-box"><label>Región Geográfica</label><span id="doc-region">—</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">2. Hardware Instalado (CPE)</div>
+            <div class="data-grid">
+                <div class="data-box"><label>Modelo de Equipo</label><span id="doc-equipo">—</span></div>
+                <div class="data-box"><label>Número de Serie</label><span id="doc-serie">—</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">3. Direccionamiento IP Público (Asignación Cliente)</div>
+            <div class="data-grid cols-3">
+                <div class="data-box"><label>Red WAN (/30)</label><span id="doc-wan-red">—</span></div>
+                <div class="data-box"><label>IP WAN PE (Gateway)</label><span id="doc-wan-pe">—</span></div>
+                <div class="data-box"><label>IP WAN CE (Cliente)</label><span id="doc-wan-ce">—</span></div>
+                <div class="data-box"><label>IP Broadcast WAN</label><span id="doc-wan-bc">—</span></div>
+                <div class="data-box" style="grid-column: span 2;"><label>Red LAN Delegada (/28)</label><span id="doc-lan-red">—</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">4. Enlace Lógico y Backbone (NOC)</div>
+            <div class="data-grid cols-3">
+                <div class="data-box" style="grid-column: span 3;"><label>Enlace Troncal NUBE</label><span id="doc-troncal-nombre">—</span></div>
+                <div class="data-box"><label>Red Troncal (/30)</label><span id="doc-troncal-red">—</span></div>
+                <div class="data-box"><label>IP Troncal PE</label><span id="doc-troncal-pe">—</span></div>
+                <div class="data-box"><label>IP Troncal CE</label><span id="doc-troncal-ce">—</span></div>
+            </div>
+        </div>
+
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-name" id="doc-tecnico">Ingeniero del NOC</div>
+                <div class="signature-role">Autorización Técnica - PumaTel</div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-name">Conformidad del Cliente</div>
+                <div class="signature-role">Firma de Entrega de Servicio</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.onload = async function() {
+            // 1. Obtener la fecha actual
+            const opcionesFecha = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('doc-fecha').textContent = new Date().toLocaleDateString('es-MX', opcionesFecha);
+
+            // 2. Extraer el ID de la OA desde la URL (ej. oa_detalle.html?id=5)
+            const urlParams = new URLSearchParams(window.location.search);
+            const id_oa = urlParams.get('id');
+
+            if (!id_oa) {
+                alert("No se proporcionó un número de Orden de Aprovisionamiento válido.");
+                return;
+            }
+
+            document.getElementById('doc-id-oa').textContent = "OA-" + id_oa;
+
+            try {
+                // 3. Obtener los datos del backend
+                const res = await fetch('http://localhost:3000/api/noc/oa');
+                const todasOA = await res.json();
+                
+                // Encontrar la OA específica
+                const oa = todasOA.find(o => o.id_oa == id_oa);
+
+                if (!oa) {
+                    alert("No se encontró la información de esta OA en la base de datos.");
+                    return;
+                }
+
+                // 4. Llenar el documento con los datos
+                document.getElementById('doc-cliente').textContent = oa.cliente || '—';
+                document.getElementById('doc-usuario').textContent = oa.numero_usuario_unico || '—';
+                document.getElementById('doc-plan').textContent = oa.plan_contratado || '—';
+                document.getElementById('doc-region').textContent = oa.region || '—';
+
+                document.getElementById('doc-equipo').textContent = oa.equipo_nombre || '—';
+                document.getElementById('doc-serie').textContent = oa.equipo_serie || '—';
+
+                document.getElementById('doc-wan-red').textContent = oa.ip_wan_red || 'PENDIENTE';
+                document.getElementById('doc-wan-pe').textContent = oa.ip_wan_pe || 'PENDIENTE';
+                document.getElementById('doc-wan-ce').textContent = oa.ip_wan_ce || 'PENDIENTE';
+                document.getElementById('doc-wan-bc').textContent = oa.ip_wan_broadcast || 'PENDIENTE';
+                document.getElementById('doc-lan-red').textContent = oa.ip_lan_red || 'PENDIENTE';
+
+                // Datos del enlace troncal (Paso 6)
+                if(oa.enlace_troncal) {
+                    document.getElementById('doc-troncal-nombre').textContent = oa.enlace_troncal;
+                    document.getElementById('doc-troncal-red').textContent = oa.ip_troncal_red || '—';
+                    document.getElementById('doc-troncal-pe').textContent = oa.ip_troncal_pe || '—';
+                    document.getElementById('doc-troncal-ce').textContent = oa.ip_troncal_ce || '—';
+                } else {
+                    document.getElementById('doc-troncal-nombre').textContent = 'SIN CONFIGURAR POR NOC';
+                    document.getElementById('doc-troncal-nombre').style.color = '#E74C3C';
+                }
+
+            } catch (error) {
+                console.error("Error obteniendo datos:", error);
+                alert("Error de conexión al servidor al intentar generar el documento.");
+            }
+        };
+    </script>
+</body>
+</html>
