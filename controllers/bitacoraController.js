@@ -12,8 +12,7 @@ const obtenerBitacora = async (req, res) => {
         res.status(500).json({ mensaje: 'Error al consultar la bitácora' });
     }
 };
-
-// Función interna para escribir en la bitácora (NO es una ruta web)
+// Función interna para escribir en la bitácora
 const registrarAccion = async (modulo, accion) => {
     try {
         await db.query('INSERT INTO bitacora (modulo, accion) VALUES (?, ?)', [modulo, accion]);

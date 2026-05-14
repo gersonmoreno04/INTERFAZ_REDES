@@ -37,7 +37,7 @@
         .sev-s3 { background: #3498DB; color: white; padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .texto-vacio { text-align: center; color: #7F8C8D; font-style: italic; padding: 20px; }
  
-        /* ── MODAL OA MEJORADO ── */
+        /* ── MODAL OA ── */
         .modal-overlay {
             display: none;
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -590,8 +590,6 @@ no neighbor <span id="script-ocs-ip" style="color:#DCDCAA;">172.16.10.2</span> r
                 const regionBadge = oa.region
                     ? `<span class="badge-region">${oa.region}</span>`
                     : '<span style="color:#999">—</span>';
-                
-                // --- INICIO DE LA NUEVA LÓGICA DE BOTONES ---
                 let btnHtml = '';
                 if (oa.estado === 'Operativo') {
                     // Botón para imprimir la OA finalizada
@@ -600,7 +598,7 @@ no neighbor <span id="script-ocs-ip" style="color:#DCDCAA;">172.16.10.2</span> r
                     // Botón para configurar usando tu función original
                     btnHtml = `<button class="btn-accion btn-azul" onclick="abrirModalOA(${oa.id_oa})">Configurar OA</button>`;
                 }
-                // --- FIN DE LA NUEVA LÓGICA ---
+                
 
                 html += `<tr>
                     <td><strong>OA-${oa.id_oa}</strong></td>
@@ -956,7 +954,7 @@ function abrirModalOCS(id_ocs, nombre, troncal, ip_ce) {
     document.getElementById('ocs-id-oculto').value = id_ocs; 
     document.getElementById('script-ocs-cliente').innerText = nombre.replace(/\s+/g, '_').toUpperCase(); 
     
-    // Aquí inyectamos los nuevos datos del backend
+    
     document.getElementById('script-ocs-troncal').innerText = troncal;
     document.getElementById('script-ocs-ip').innerText = ip_ce;
     

@@ -37,8 +37,6 @@ const crearEquipo = async (req, res) => {
 const actualizarEquipo = async (req, res) => {
     const { id } = req.params;
     const { equipo, serie, id_cliente, estado } = req.body;
-    
-    // Si el id_cliente viene vacío, lo convertimos a NULL para la base de datos
     const clienteAsignado = (id_cliente === '' || !id_cliente) ? null : id_cliente;
 
     try {

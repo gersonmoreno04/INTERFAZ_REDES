@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pumatel - Almacén y Logística</title>
     <style>
-        /* ESTILOS GENERALES Y NAVEGACIÓN (Iguales a NOC/Admin para consistencia) */
+        /* ESTILOS GENERALES Y NAVEGACIÓN*/
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #F4F6F8; color: #333333; font-size: 15px; }
         nav { background: #002B5C; padding: 12px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #D4AF37; margin-bottom: 30px; }
         .nav-buttons { display: flex; gap: 10px; align-items: center; }
@@ -137,7 +137,6 @@
     </div>
  
     <script>
-        // Aquí guardaremos los datos temporalmente para poder editarlos sin recargar
         let datosInventario = []; 
  
         window.onload = function() {
@@ -155,12 +154,10 @@
                 
                 let html = '';
                 datosInventario.forEach(item => {
-                    // Si no tiene cliente, mostramos el texto gris de "EN BODEGA"
                     let asignado = item.cliente ? item.cliente : '<span class="texto-gris">EN BODEGA</span>';
                     let direccion = item.direccion ? item.direccion : '---';
                     let idCliente = item.id_cliente ? `CL-${item.id_cliente}` : '---';
                     
-                    // Colores para el estado
                     let colorEstado = '#333';
                     if(item.estado === 'Optimo') colorEstado = '#27AE60';
                     if(item.estado === 'En reparacion') colorEstado = '#D35400';
@@ -214,7 +211,7 @@
             document.getElementById('modal-inventario').style.display = 'none';
         }
  
-        // 3. ENVIAR DATOS A NODE.JS (Crear o Editar)
+        // 3. ENVIAR DATOS A NODE.JS 
         document.getElementById('form-equipo').addEventListener('submit', async (e) => {
             e.preventDefault(); // Evita que la página se recargue
  

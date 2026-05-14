@@ -1,15 +1,13 @@
 const db = require('../config/db');
 const { registrarAccion } = require('./bitacoraController');
 
-/**
- * 🔹 CREAR REPORTE
- * Vincula al cliente, detecta su equipo y abre un ticket en el NOC.
- */
+ //CREAR REPORTE
+
 const crearReporte = async (req, res) => {
     const { identificador, tipo_falla, descripcion } = req.body;
 
     try {
-        // 1. BUSCAR AL CLIENTE (Por ID o Teléfono)
+        // 1. BUSCAR AL CLIENTE 
         const [clientes] = await db.query(
             `SELECT id_cliente, nombre_completo 
              FROM clientes 
@@ -26,7 +24,6 @@ const crearReporte = async (req, res) => {
         const cliente = clientes[0];
 
         // 2. BUSCAR EL EQUIPO ASIGNADO EN INVENTARIO
-        // Esto permite que el ingeniero del NOC sepa qué hardware revisar
         const [equipos] = await db.query(
             `SELECT id_inventario FROM inventario WHERE id_cliente = ?`,
             [cliente.id_cliente]
@@ -43,7 +40,6 @@ const crearReporte = async (req, res) => {
         const descripcionCompleta = `[FALLA: ${tipo_falla}] - ${descripcion}`;
 
         // 5. INSERTAR EN TABLA 'tickets'
-        // Usamos 'Nuevo' como estado inicial según tu estructura de BD
         await db.query(
             `INSERT INTO tickets (prioridad, descripcion, id_cliente, id_tecnico, estado) 
              VALUES (?, ?, ?, NULL, 'Nuevo')`,
@@ -63,11 +59,7 @@ const crearReporte = async (req, res) => {
     }
 };
 
-/**
- * 🔹 OBTENER TODOS LOS REPORTES
- * Muestra la lista de fallas para el Dashboard del NOC.
- */
-// 🔹 CAMBIO EN EL CONTROLLER (obtenerReportes)
+//Muestra la lista de todos los reportes
 const obtenerReportes = async (req, res) => {
     try {
         const [rows] = await db.query(`
@@ -88,10 +80,7 @@ const obtenerReportes = async (req, res) => {
     }
 };
 
-/**
- * 🔹 ACTUALIZAR ESTADO DEL REPORTE
- * Permite al ingeniero del NOC cambiar el estado (En revision, Esperando Autorizacion, etc.)
- */
+//Actualiza la lista de reportes
 const actualizarReporte = async (req, res) => {
     const { id } = req.params;
     const { estado, causa_raiz, acciones_resolucion } = req.body;
@@ -110,7 +99,7 @@ const actualizarReporte = async (req, res) => {
     }
 };
 
-// 🔹 EXPORTACIÓN (Crucial para que las rutas no den TypeError)
+//EXPORTACIÓN
 module.exports = { 
     crearReporte, 
     actualizarReporte, 

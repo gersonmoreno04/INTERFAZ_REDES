@@ -33,17 +33,14 @@
             height: 100%; 
             z-index: 1000; 
         }
-        /* Actualiza esto en tus estilos CSS */
         .sidebar-header { 
-            padding: 15px 20px; /* Reduje el padding para acomodar el logo grande */
+            padding: 15px 20px; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
             text-align: center; 
             color: #D4AF37;
             text-transform: uppercase;
-            
-            /* NUEVO: Flexbox para alinear logo y texto */
             display: flex; 
-            flex-direction: column; /* Logo arriba, texto abajo */
+            flex-direction: column; 
             align-items: center;
             justify-content: center;
             gap: 10px;
@@ -389,17 +386,13 @@
             try {
                 const res = await fetch('http://localhost:3000/api/dashboard/metricas');
                 const datos = await res.json();
-                
-                // Si Node.js nos manda un mensaje de error en vez de los números:
                 if (!res.ok || datos.mensaje) {
                     console.error('El servidor dice:', datos.mensaje);
                     document.getElementById('kpi-clientes').innerText = "Error";
                     document.getElementById('kpi-tickets').innerText = "Error";
                     document.getElementById('kpi-inventario').innerText = "Error";
-                    return; // Detenemos la función aquí
+                    return; 
                 }
-                
-                // Si todo está bien, ponemos los números
                 document.getElementById('kpi-clientes').innerText = datos.clientes;
                 document.getElementById('kpi-tickets').innerText = datos.tickets;
                 document.getElementById('kpi-inventario').innerText = datos.inventario;

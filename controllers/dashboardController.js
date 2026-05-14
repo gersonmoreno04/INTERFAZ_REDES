@@ -7,11 +7,11 @@ const obtenerMetricas = async (req, res) => {
         const [clientes] = await db.query('SELECT COUNT(*) AS total FROM clientes');
         const totalClientes = clientes[0].total;
 
-        // 2. Contar tickets pendientes (Todo lo que NO sea "Finalizado")
+        // 2. Contar tickets pendientes 
         const [tickets] = await db.query('SELECT COUNT(*) AS total FROM tickets WHERE estado != "Finalizado"');
         const ticketsPendientes = tickets[0].total;
 
-        // 3. Contar TODO el inventario registrado (sin importar estado)
+        // 3. Contar TODO el inventario registrado
         const [inventario] = await db.query('SELECT COUNT(*) AS total FROM inventario');
         const totalInventario = inventario[0].total || 0;
 

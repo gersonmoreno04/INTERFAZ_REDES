@@ -202,7 +202,7 @@ const eliminarPersonal = async (req, res) => {
    MÓDULO 3: GESTIÓN DE CONTRATOS (VENTAS)
    ========================================================================= */
 
-// PUT /api/usuarios/contratos/:id — Edita plan y línea telefónica del contrato
+// PUT /api/usuarios/contratos/:id 
 const editarContrato = async (req, res) => {
     const { id } = req.params; // id_servicio
     const { plan_contratado, linea_telefonica_asignada } = req.body;

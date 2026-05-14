@@ -1,7 +1,6 @@
 // Archivo: controllers/ticketsController.js
 const db = require('../config/db');
 
-// ¡LA LÍNEA CLAVE! Importamos la función de la bitácora correctamente
 const { registrarAccion } = require('./bitacoraController');
 
 const obtenerTickets = async (req, res) => {

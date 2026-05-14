@@ -20,7 +20,7 @@ const asignarTicket = async (req, res) => {
     }
 };
 
-// 1. OBTENER FALLAS (Corregido para mostrar el nombre del cliente)
+// 1. OBTENER FALLAS 
 const obtenerFallas = async (req, res) => {
     try {
         const query = `
@@ -81,7 +81,7 @@ const obtenerCambios = async (req, res) => {
     }
 };
 
-// 4. OBTENER OCS (Módulo de Cancelaciones) - Actualizado para obtener enlace troncal e IP
+// 4. OBTENER OCS (Módulo de Cancelaciones) 
 const obtenerCancelaciones = async (req, res) => {
     try {
         const query = `
